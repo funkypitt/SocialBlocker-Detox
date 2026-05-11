@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- Shield shape -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M54,20L27,36v18c0,16.65 11.52,32.22 27,36 15.48,-3.78 27,-19.35 27,-36V36L54,20z" />
+    <!-- Block/ban circle -->
+    <path
+        android:fillColor="#D32F2F"
+        android:pathData="M54,42m-16,0a16,16 0,1 1,32 0a16,16 0,1 1,-32 0" />
+    <!-- Diagonal line for "blocked" -->
+    <path
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="3.5"
+        android:pathData="M43,31L65,53" />
+    <!-- Play triangle (YouTube reference) -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M50,35l0,14 12,-7z" />
+</vector>

@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Social Blocker</title>
+<style>
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+    max-width: 720px;
+    margin: 2rem auto;
+    padding: 0 1.25rem;
+    line-height: 1.55;
+    color: #222;
+  }
+  h1, h2 { line-height: 1.25; }
+  h1 { margin-bottom: 0.25rem; }
+  h2 { margin-top: 2rem; border-bottom: 1px solid #eee; padding-bottom: 0.25rem; }
+  code, pre { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  pre { background: #f6f6f6; padding: 0.75rem 1rem; overflow-x: auto; border-radius: 4px; }
+  ul { padding-left: 1.25rem; }
+  a { color: #2a5db0; }
+</style>
+</head>
+<body>
+
+<h1>Social Blocker</h1>
+<p><em>Local DNS VPN that blocks YouTube, Instagram and TikTok on a schedule.</em></p>
+
+<h2>Overview</h2>
+<p>
+  Social Blocker is a parental-control app that uses Android's
+  <code>VpnService</code> to install a local, DNS-intercepting VPN. Only DNS traffic (UDP port 53)
+  is routed through a virtual TUN interface; all other traffic flows normally — there is no
+  upstream proxy, no certificate, and the device's regular network is not affected. DNS
+  queries for the platforms you select (YouTube, Instagram, TikTok) are blocked at the device
+  level, with optional daily schedule windows.
+</p>
+<p>
+  A password gate (<code>PasswordActivity</code>) protects the settings. The blocker auto-starts
+  on boot and runs as a foreground "special use" service so Android does not kill it.
+</p>
+
+<h2>Features</h2>
+<ul>
+  <li>Per-platform toggles: YouTube, Instagram, TikTok</li>
+  <li>Local DNS-only VPN — no upstream proxy or certificate</li>
+  <li>Schedule windows (e.g. <code>6-8,18-22</code>) — outside those hours, blocking is on</li>
+  <li>Password-protected settings</li>
+  <li>Auto-start on boot, runs as a foreground special-use service</li>
+  <li>Always-on VPN supported (Settings &rarr; Network &rarr; VPN)</li>
+  <li>UI in French (<code>res/values/strings.xml</code>)</li>
+</ul>
+
+<h2>Screenshots</h2>
+<p>No <code>screenshots/</code> folder is shipped with the source.</p>
+
+<h2>Build &amp; install</h2>
+<p>Standard Android Gradle project.</p>
+<pre>./gradlew assembleRelease
+# or
+./gradlew bundleRelease
+</pre>
+<p>
+  Application id: <code>com.parentcontrol.socialblocker</code>. Min SDK 24, target SDK 34.
+  Required permissions include <code>BIND_VPN_SERVICE</code>, <code>FOREGROUND_SERVICE</code>
+  and <code>FOREGROUND_SERVICE_SPECIAL_USE</code>,
+  <code>RECEIVE_BOOT_COMPLETED</code>, <code>POST_NOTIFICATIONS</code> and
+  <code>REQUEST_IGNORE_BATTERY_OPTIMIZATIONS</code>.
+</p>
+
+<h2>License</h2>
+<p>TODO — no <code>LICENSE</code> file is bundled in this repo and there is no SPDX header in
+the sources. Confirm and add a license before publishing.</p>
+
+</body>
+</html>

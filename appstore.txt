@@ -1,0 +1,28 @@
+[en]
+Local DNS VPN that blocks YouTube, Instagram and TikTok on a schedule.
+
+Social Blocker installs a local Android VPN that intercepts DNS queries for YouTube, Instagram and TikTok and silently drops them. Only DNS (UDP 53) is routed through the virtual interface — there is no upstream proxy and no certificate, so the rest of your traffic is untouched.
+
+Pick which platforms to block, optionally define daily allow-windows (e.g. 6-8,18-22), and protect the settings with a password. The service starts automatically on boot and runs as a foreground special-use service so Android does not kill it. Combine it with Always-on VPN for stricter enforcement.
+
+- Per-platform toggles: YouTube, Instagram, TikTok
+- Local DNS-only VPN — no upstream proxy
+- Daily schedule windows (block when outside the window)
+- Password-protected settings
+- Auto-start on boot, foreground special-use service
+- Compatible with Always-on VPN
+
+---
+[fr]
+VPN local DNS bloquant YouTube, Instagram et TikTok selon un planning.
+
+Social Blocker installe un VPN Android local qui intercepte les requêtes DNS de YouTube, Instagram et TikTok et les rejette silencieusement. Seul le DNS (UDP 53) passe par l'interface virtuelle — pas de proxy distant, pas de certificat, le reste du trafic reste intact.
+
+Choisissez les plateformes à bloquer, définissez éventuellement des plages horaires autorisées par jour (ex. 6-8,18-22), et protégez les paramètres par mot de passe. Le service démarre automatiquement au boot et tourne en avant-plan comme "special use service" pour qu'Android ne l'arrête pas. Combinez-le avec le VPN permanent ("Always-on VPN") pour une application plus stricte.
+
+- Bascules par plateforme : YouTube, Instagram, TikTok
+- VPN local DNS uniquement — pas de proxy distant
+- Plages horaires quotidiennes (blocage hors plage)
+- Paramètres protégés par mot de passe
+- Démarrage automatique au boot, service "special use" en avant-plan
+- Compatible avec le VPN permanent (Always-on VPN)
