@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Social Detox</string>
+    <string name="blocking_on">BLOCAGE ACTIF</string>
+    <string name="blocking_off">BLOCAGE INACTIF</string>
+    <string name="schedule_hint">Plages autorisées (ex: 6-8,18-22)</string>
+    <string name="platforms_label">Plateformes bloquees</string>
+    <string name="schedule_label">Plage(s) quotidienne(s) autorisee(s)</string>
+    <string name="schedule_saved">Plages horaires enregistrées</string>
+    <string name="vpn_notification_title">Social Detox actif</string>
+    <string name="vpn_notification_text">Blocage des réseaux sociaux en cours</string>
+    <string name="vpn_channel_name">Service de blocage</string>
+    <string name="save">Enregistrer</string>
+    <string name="no_schedule">Aucune plage : blocage permanent</string>
+    <string name="schedule_info">Si vide, blocage 24h/24</string>
+    <string name="battery_optimization_hint">Desactivez l\'optimisation batterie pour Social Detox</string>
+    <string name="always_on_hint">Pour une protection maximale :\nParametres > Reseau > VPN > Social Detox > VPN permanent</string>
+    <string name="always_on_title">VPN permanent</string>
+    <string name="open_vpn_settings">Ouvrir les paramètres VPN</string>
+    <string name="later">Plus tard</string>
+    <string name="schedule_active">Actif : %1$sh</string>
+    <string name="require_math_label">Résoudre des problèmes de maths pour débloquer</string>
+    <string name="challenge_title">Ce site est bloqué</string>
+    <string name="challenge_subtitle">Pour débloquer, vous devez résoudre 5 problèmes de maths de difficulté croissante.</string>
+    <string name="challenge_question_counter">Question %1$d sur %2$d</string>
+    <string name="challenge_answer_hint">Votre réponse…</string>
+    <string name="challenge_submit">Valider</string>
+</resources>

@@ -176,9 +176,9 @@ public class MainActivity extends AppCompatActivity {
         prefs.setShownAlwaysOnHint(true);
 
         new AlertDialog.Builder(this)
-                .setTitle("VPN permanent")
+                .setTitle(R.string.always_on_title)
                 .setMessage(getString(R.string.always_on_hint))
-                .setPositiveButton("Ouvrir les parametres VPN", (d, w) -> {
+                .setPositiveButton(R.string.open_vpn_settings, (d, w) -> {
                     try {
                         startActivity(new Intent("android.net.vpn.SETTINGS"));
                     } catch (Exception e) {
@@ -187,7 +187,7 @@ public class MainActivity extends AppCompatActivity {
                         } catch (Exception ignored) {}
                     }
                 })
-                .setNegativeButton("Plus tard", null)
+                .setNegativeButton(R.string.later, null)
                 .show();
     }
 
@@ -223,7 +223,7 @@ public class MainActivity extends AppCompatActivity {
         if (schedule.isEmpty()) {
             currentScheduleText.setText(R.string.no_schedule);
         } else {
-            currentScheduleText.setText("Actif : " + schedule + "h");
+            currentScheduleText.setText(getString(R.string.schedule_active, schedule));
         }
     }
 }
