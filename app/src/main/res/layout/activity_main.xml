@@ -107,6 +107,26 @@
                 android:checked="true"
                 app:buttonTint="@color/red_primary" />
 
+            <com.google.android.material.checkbox.MaterialCheckBox
+                android:id="@+id/checkReddit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Reddit"
+                android:textColor="@color/text_light"
+                android:textSize="15sp"
+                android:checked="true"
+                app:buttonTint="@color/red_primary" />
+
+            <com.google.android.material.checkbox.MaterialCheckBox
+                android:id="@+id/checkX"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="X (Twitter)"
+                android:textColor="@color/text_light"
+                android:textSize="15sp"
+                android:checked="true"
+                app:buttonTint="@color/red_primary" />
+
         </LinearLayout>
 
     </com.google.android.material.card.MaterialCardView>

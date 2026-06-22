@@ -83,6 +83,26 @@ public class SocialBlockerVpnService extends VpnService {
             "lf16-tiktok-common.tiktokcdn-us.com"
     ));
 
+    private static final Set<String> REDDIT_DOMAINS = new HashSet<>(Arrays.asList(
+            "reddit.com", "www.reddit.com", "m.reddit.com",
+            "old.reddit.com", "new.reddit.com", "np.reddit.com",
+            "out.reddit.com", "oauth.reddit.com", "gateway.reddit.com",
+            "redd.it", "i.redd.it", "v.redd.it",
+            "redditstatic.com", "www.redditstatic.com",
+            "redditmedia.com", "i.redditmedia.com",
+            "reddit.map.fastly.net", "redditinc.com"
+    ));
+
+    private static final Set<String> X_DOMAINS = new HashSet<>(Arrays.asList(
+            "x.com", "www.x.com", "mobile.x.com", "api.x.com",
+            "twitter.com", "www.twitter.com", "m.twitter.com", "mobile.twitter.com",
+            "api.twitter.com", "twttr.com",
+            "t.co",
+            "twimg.com", "abs.twimg.com", "abs-0.twimg.com",
+            "pbs.twimg.com", "video.twimg.com",
+            "twitter.map.fastly.net"
+    ));
+
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         if (intent != null && "STOP".equals(intent.getAction())) {
@@ -233,6 +253,8 @@ public class SocialBlockerVpnService extends VpnService {
         if (prefs.isYoutubeBlocked() && matchesDomainSet(domain, YOUTUBE_DOMAINS)) return true;
         if (prefs.isInstagramBlocked() && matchesDomainSet(domain, INSTAGRAM_DOMAINS)) return true;
         if (prefs.isTiktokBlocked() && matchesDomainSet(domain, TIKTOK_DOMAINS)) return true;
+        if (prefs.isRedditBlocked() && matchesDomainSet(domain, REDDIT_DOMAINS)) return true;
+        if (prefs.isXBlocked() && matchesDomainSet(domain, X_DOMAINS)) return true;
 
         return false;
     }

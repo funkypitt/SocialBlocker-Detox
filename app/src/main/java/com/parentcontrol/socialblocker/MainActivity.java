@@ -30,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView statusText;
     private TextView currentScheduleText;
     private TextInputEditText scheduleInput;
-    private CheckBox checkYoutube, checkInstagram, checkTiktok;
+    private CheckBox checkYoutube, checkInstagram, checkTiktok, checkReddit, checkX;
 
     private final ActivityResultLauncher<Intent> vpnPermissionLauncher =
             registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
@@ -54,6 +54,8 @@ public class MainActivity extends AppCompatActivity {
         checkYoutube = findViewById(R.id.checkYoutube);
         checkInstagram = findViewById(R.id.checkInstagram);
         checkTiktok = findViewById(R.id.checkTiktok);
+        checkReddit = findViewById(R.id.checkReddit);
+        checkX = findViewById(R.id.checkX);
 
         // Request notification permission on Android 13+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -71,6 +73,8 @@ public class MainActivity extends AppCompatActivity {
         checkYoutube.setOnCheckedChangeListener((b, checked) -> prefs.setYoutubeBlocked(checked));
         checkInstagram.setOnCheckedChangeListener((b, checked) -> prefs.setInstagramBlocked(checked));
         checkTiktok.setOnCheckedChangeListener((b, checked) -> prefs.setTiktokBlocked(checked));
+        checkReddit.setOnCheckedChangeListener((b, checked) -> prefs.setRedditBlocked(checked));
+        checkX.setOnCheckedChangeListener((b, checked) -> prefs.setXBlocked(checked));
 
         loadPreferences();
         updateUI();
@@ -90,6 +94,8 @@ public class MainActivity extends AppCompatActivity {
         checkYoutube.setChecked(prefs.isYoutubeBlocked());
         checkInstagram.setChecked(prefs.isInstagramBlocked());
         checkTiktok.setChecked(prefs.isTiktokBlocked());
+        checkReddit.setChecked(prefs.isRedditBlocked());
+        checkX.setChecked(prefs.isXBlocked());
     }
 
     private void toggleBlocking() {
