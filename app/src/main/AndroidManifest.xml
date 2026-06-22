@@ -28,6 +28,11 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".MathChallengeActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
         <service
             android:name=".SocialBlockerVpnService"
             android:exported="false"

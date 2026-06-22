@@ -15,4 +15,10 @@
     <string name="schedule_info">Si vide, blocage 24h/24</string>
     <string name="battery_optimization_hint">Desactivez l\'optimisation batterie pour Social Detox</string>
     <string name="always_on_hint">Pour une protection maximale :\nParametres > Reseau > VPN > Social Detox > VPN permanent</string>
+    <string name="require_math_label">Résoudre des problèmes de maths pour débloquer</string>
+    <string name="challenge_title">This site is blocked</string>
+    <string name="challenge_subtitle">To unblock, you must solve 5 increasingly difficult math problems.</string>
+    <string name="challenge_question_counter">Question %1$d of %2$d</string>
+    <string name="challenge_answer_hint">Your answer…</string>
+    <string name="challenge_submit">Submit</string>
 </resources>

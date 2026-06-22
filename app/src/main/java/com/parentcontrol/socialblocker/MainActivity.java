@@ -31,11 +31,19 @@ public class MainActivity extends AppCompatActivity {
     private TextView currentScheduleText;
     private TextInputEditText scheduleInput;
     private CheckBox checkYoutube, checkInstagram, checkTiktok, checkReddit, checkX;
+    private CheckBox checkRequireMath;
 
     private final ActivityResultLauncher<Intent> vpnPermissionLauncher =
             registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
                 if (result.getResultCode() == Activity.RESULT_OK) {
                     startBlocker();
+                }
+            });
+
+    private final ActivityResultLauncher<Intent> mathChallengeLauncher =
+            registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+                if (result.getResultCode() == Activity.RESULT_OK) {
+                    stopBlocker();
                 }
             });
 
@@ -56,6 +64,7 @@ public class MainActivity extends AppCompatActivity {
         checkTiktok = findViewById(R.id.checkTiktok);
         checkReddit = findViewById(R.id.checkReddit);
         checkX = findViewById(R.id.checkX);
+        checkRequireMath = findViewById(R.id.checkRequireMath);
 
         // Request notification permission on Android 13+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -75,6 +84,7 @@ public class MainActivity extends AppCompatActivity {
         checkTiktok.setOnCheckedChangeListener((b, checked) -> prefs.setTiktokBlocked(checked));
         checkReddit.setOnCheckedChangeListener((b, checked) -> prefs.setRedditBlocked(checked));
         checkX.setOnCheckedChangeListener((b, checked) -> prefs.setXBlocked(checked));
+        checkRequireMath.setOnCheckedChangeListener((b, checked) -> prefs.setRequireMathToUnblock(checked));
 
         loadPreferences();
         updateUI();
@@ -96,11 +106,16 @@ public class MainActivity extends AppCompatActivity {
         checkTiktok.setChecked(prefs.isTiktokBlocked());
         checkReddit.setChecked(prefs.isRedditBlocked());
         checkX.setChecked(prefs.isXBlocked());
+        checkRequireMath.setChecked(prefs.isRequireMathToUnblock());
     }
 
     private void toggleBlocking() {
         if (prefs.isBlockingEnabled()) {
-            stopBlocker();
+            if (prefs.isRequireMathToUnblock()) {
+                mathChallengeLauncher.launch(new Intent(this, MathChallengeActivity.class));
+            } else {
+                stopBlocker();
+            }
         } else {
             Intent prepare = VpnService.prepare(this);
             if (prepare != null) {
@@ -180,6 +195,11 @@ public class MainActivity extends AppCompatActivity {
 
     private void updateUI() {
         boolean enabled = prefs.isBlockingEnabled();
+
+        // The math-challenge option can only be changed while unblocked — otherwise
+        // it could simply be unticked to bypass the challenge.
+        checkRequireMath.setEnabled(!enabled);
+
         if (enabled) {
             toggleButton.setText("ON");
             toggleButton.setBackgroundTintList(

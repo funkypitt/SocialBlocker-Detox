@@ -42,9 +42,37 @@
         app:backgroundTint="@color/red_primary"
         app:cornerRadius="90dp"
         app:layout_constraintTop_toBottomOf="@id/statusText"
-        app:layout_constraintBottom_toTopOf="@id/platformCard"
+        app:layout_constraintBottom_toTopOf="@id/unlockCard"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- Unlock options card -->
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/unlockCard"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="12dp"
+        app:cardBackgroundColor="@color/card_bg"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="0dp"
+        app:strokeWidth="0dp"
+        app:layout_constraintBottom_toTopOf="@id/platformCard"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <com.google.android.material.checkbox.MaterialCheckBox
+            android:id="@+id/checkRequireMath"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            android:text="@string/require_math_label"
+            android:textColor="@color/text_light"
+            android:textSize="15sp"
+            app:buttonTint="@color/red_primary" />
+
+    </com.google.android.material.card.MaterialCardView>
 
     <!-- Platform selection card -->
     <com.google.android.material.card.MaterialCardView
