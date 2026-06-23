@@ -103,6 +103,11 @@ public class SocialBlockerVpnService extends VpnService {
             "twitter.map.fastly.net"
     ));
 
+    private static final Set<String> SUBSTACK_DOMAINS = new HashSet<>(Arrays.asList(
+            "substack.com", "www.substack.com",
+            "substackcdn.com", "substackapi.com"
+    ));
+
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         if (intent != null && "STOP".equals(intent.getAction())) {
@@ -255,6 +260,7 @@ public class SocialBlockerVpnService extends VpnService {
         if (prefs.isTiktokBlocked() && matchesDomainSet(domain, TIKTOK_DOMAINS)) return true;
         if (prefs.isRedditBlocked() && matchesDomainSet(domain, REDDIT_DOMAINS)) return true;
         if (prefs.isXBlocked() && matchesDomainSet(domain, X_DOMAINS)) return true;
+        if (prefs.isSubstackBlocked() && matchesDomainSet(domain, SUBSTACK_DOMAINS)) return true;
 
         return false;
     }

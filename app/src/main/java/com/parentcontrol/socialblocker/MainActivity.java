@@ -30,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView statusText;
     private TextView currentScheduleText;
     private TextInputEditText scheduleInput;
-    private CheckBox checkYoutube, checkInstagram, checkTiktok, checkReddit, checkX;
+    private CheckBox checkYoutube, checkInstagram, checkTiktok, checkReddit, checkX, checkSubstack;
     private CheckBox checkRequireMath;
 
     private final ActivityResultLauncher<Intent> vpnPermissionLauncher =
@@ -64,6 +64,7 @@ public class MainActivity extends AppCompatActivity {
         checkTiktok = findViewById(R.id.checkTiktok);
         checkReddit = findViewById(R.id.checkReddit);
         checkX = findViewById(R.id.checkX);
+        checkSubstack = findViewById(R.id.checkSubstack);
         checkRequireMath = findViewById(R.id.checkRequireMath);
 
         // Request notification permission on Android 13+
@@ -84,6 +85,7 @@ public class MainActivity extends AppCompatActivity {
         checkTiktok.setOnCheckedChangeListener((b, checked) -> prefs.setTiktokBlocked(checked));
         checkReddit.setOnCheckedChangeListener((b, checked) -> prefs.setRedditBlocked(checked));
         checkX.setOnCheckedChangeListener((b, checked) -> prefs.setXBlocked(checked));
+        checkSubstack.setOnCheckedChangeListener((b, checked) -> prefs.setSubstackBlocked(checked));
         checkRequireMath.setOnCheckedChangeListener((b, checked) -> prefs.setRequireMathToUnblock(checked));
 
         loadPreferences();
@@ -106,6 +108,7 @@ public class MainActivity extends AppCompatActivity {
         checkTiktok.setChecked(prefs.isTiktokBlocked());
         checkReddit.setChecked(prefs.isRedditBlocked());
         checkX.setChecked(prefs.isXBlocked());
+        checkSubstack.setChecked(prefs.isSubstackBlocked());
         checkRequireMath.setChecked(prefs.isRequireMathToUnblock());
     }
 
@@ -199,6 +202,16 @@ public class MainActivity extends AppCompatActivity {
         // The math-challenge option can only be changed while unblocked — otherwise
         // it could simply be unticked to bypass the challenge.
         checkRequireMath.setEnabled(!enabled);
+
+        // Platform toggles are locked while blocking is active — otherwise a platform
+        // could simply be unchecked to unblock it without going through the gate.
+        // Substack is the sole exception: it stays freely toggleable at all times.
+        checkYoutube.setEnabled(!enabled);
+        checkInstagram.setEnabled(!enabled);
+        checkTiktok.setEnabled(!enabled);
+        checkReddit.setEnabled(!enabled);
+        checkX.setEnabled(!enabled);
+        checkSubstack.setEnabled(true);
 
         if (enabled) {
             toggleButton.setText("ON");

@@ -14,6 +14,7 @@ public class BlockPreferences {
     private static final String KEY_BLOCK_TIKTOK = "block_tiktok";
     private static final String KEY_BLOCK_REDDIT = "block_reddit";
     private static final String KEY_BLOCK_X = "block_x";
+    private static final String KEY_BLOCK_SUBSTACK = "block_substack";
     private static final String KEY_REQUIRE_MATH = "require_math_to_unblock";
 
     private final SharedPreferences prefs;
@@ -86,6 +87,14 @@ public class BlockPreferences {
 
     public void setXBlocked(boolean blocked) {
         prefs.edit().putBoolean(KEY_BLOCK_X, blocked).apply();
+    }
+
+    public boolean isSubstackBlocked() {
+        return prefs.getBoolean(KEY_BLOCK_SUBSTACK, true);
+    }
+
+    public void setSubstackBlocked(boolean blocked) {
+        prefs.edit().putBoolean(KEY_BLOCK_SUBSTACK, blocked).apply();
     }
 
     // Require solving math problems before blocking can be turned off (default off)
