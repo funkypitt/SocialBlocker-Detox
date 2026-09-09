@@ -4,10 +4,16 @@ import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.LinkProperties;
+import android.net.Network;
+import android.net.NetworkCapabilities;
 import android.net.VpnService;
 import android.os.Build;
 import android.os.ParcelFileDescriptor;
+import android.system.OsConstants;
 import android.util.Log;
 
 import java.io.FileInputStream;
@@ -16,15 +22,30 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * DNS-intercepting VPN service with per-platform blocking.
  *
  * Only DNS traffic (UDP 53) is routed through the TUN via a virtual DNS IP
  * (10.0.0.1). All other traffic flows normally — zero interference.
+ *
+ * Network robustness notes (learned the hard way on US carriers):
+ *  - Android blocks every address family the VPN does not provide an address
+ *    for. With an IPv4-only TUN that silently cut all IPv6 traffic, which on
+ *    IPv6-only mobile networks (T-Mobile US and friends, 464XLAT) meant the
+ *    whole phone lost connectivity. We now explicitly let IPv6 bypass the VPN.
+ *  - Upstream queries go to the underlying network's own resolvers first
+ *    (IPv4 or IPv6), then to public resolvers of both families. A hard-coded
+ *    8.8.8.8 is useless on networks that block or lack IPv4 transit.
+ *  - Queries are answered from a thread pool so one slow resolver cannot
+ *    stall every DNS lookup on the device.
  */
 public class SocialBlockerVpnService extends VpnService {
 
@@ -34,11 +55,27 @@ public class SocialBlockerVpnService extends VpnService {
 
     private static final String VPN_ADDRESS = "10.0.0.2";
     private static final String VPN_DNS = "10.0.0.1";
-    private static final String UPSTREAM_DNS = "8.8.8.8";
     private static final int DNS_PORT = 53;
+
+    /** Public resolvers tried after the underlying network's own servers. */
+    private static final String[] FALLBACK_DNS = {
+            "8.8.8.8", "1.1.1.1",
+            "2001:4860:4860::8888", "2606:4700:4700::1111"
+    };
+    private static final int UPSTREAM_TIMEOUT_MS = 2500;
+    private static final long UPSTREAM_CACHE_MS = 15_000;
+    private static final int RESOLVER_THREADS = 8;
 
     private ParcelFileDescriptor vpnInterface;
     private volatile boolean running = false;
+    private ExecutorService resolverPool;
+    private final Object tunWriteLock = new Object();
+
+    // Cached view of the underlying (non-VPN) network and its resolvers.
+    private volatile Network underlyingNetwork;
+    private volatile List<InetAddress> upstreamServers = new ArrayList<>();
+    private volatile long upstreamRefreshedAt = 0;
+    private volatile InetAddress lastGoodUpstream;
 
     // ---- Per-platform domain lists ----
 
@@ -141,6 +178,12 @@ public class SocialBlockerVpnService extends VpnService {
             builder.addDnsServer(VPN_DNS);
             builder.addRoute(VPN_DNS, 32);
 
+            // The TUN only carries IPv4 (our virtual DNS). Without this call
+            // Android drops all IPv6 traffic on the device, which breaks
+            // IPv6-only carriers entirely. IPv6 DNS still lands on 10.0.0.1
+            // because the resolver only uses the VPN's declared DNS servers.
+            builder.allowFamily(OsConstants.AF_INET6);
+
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 builder.setMetered(false);
             }
@@ -155,8 +198,10 @@ public class SocialBlockerVpnService extends VpnService {
             }
 
             running = true;
+            resolverPool = Executors.newFixedThreadPool(RESOLVER_THREADS);
+            refreshUpstreamServers(true);
             new Thread(this::packetLoop, "VPN-PacketLoop").start();
-            Log.i(TAG, "VPN started");
+            Log.i(TAG, "VPN started, upstream=" + upstreamServers);
 
         } catch (Exception e) {
             Log.e(TAG, "Error starting VPN", e);
@@ -166,6 +211,10 @@ public class SocialBlockerVpnService extends VpnService {
 
     private void stopVpn() {
         running = false;
+        if (resolverPool != null) {
+            resolverPool.shutdownNow();
+            resolverPool = null;
+        }
         if (vpnInterface != null) {
             try { vpnInterface.close(); } catch (IOException e) { /* ignore */ }
             vpnInterface = null;
@@ -186,7 +235,16 @@ public class SocialBlockerVpnService extends VpnService {
             try {
                 int length = tunIn.read(packet);
                 if (length <= 0) { Thread.sleep(10); continue; }
-                handlePacket(packet, length, tunOut, prefs);
+                // Copy: the buffer is reused by the next read while the
+                // resolver thread is still working on this query.
+                final byte[] copy = Arrays.copyOf(packet, length);
+                final ExecutorService pool = resolverPool;
+                if (pool == null) break;
+                try {
+                    pool.execute(() -> handlePacket(copy, copy.length, tunOut, prefs));
+                } catch (java.util.concurrent.RejectedExecutionException e) {
+                    break;
+                }
             } catch (IOException e) {
                 if (running) Log.e(TAG, "Packet loop I/O error", e);
                 break;
@@ -245,8 +303,11 @@ public class SocialBlockerVpnService extends VpnService {
 
         byte[] responsePacket = buildUdpResponsePacket(packet, ipHeaderLen, srcPort, dnsResponse);
         if (responsePacket != null) {
-            tunOut.write(responsePacket);
-            tunOut.flush();
+            synchronized (tunWriteLock) {
+                if (!running) return;
+                tunOut.write(responsePacket);
+                tunOut.flush();
+            }
         }
     }
 
@@ -332,21 +393,105 @@ public class SocialBlockerVpnService extends VpnService {
         }
     }
 
+    // ========================= Upstream Resolvers =========================
+
+    /**
+     * Refresh the list of upstream resolvers: the underlying (non-VPN)
+     * network's own DNS servers first, then public fallbacks of both
+     * families. Cheap enough to call before every forward; throttled.
+     */
+    private void refreshUpstreamServers(boolean force) {
+        long now = System.currentTimeMillis();
+        if (!force && now - upstreamRefreshedAt < UPSTREAM_CACHE_MS) return;
+        upstreamRefreshedAt = now;
+
+        List<InetAddress> servers = new ArrayList<>();
+        Network chosen = null;
+        boolean chosenValidated = false;
+        try {
+            ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+            if (cm != null) {
+                for (Network net : cm.getAllNetworks()) {
+                    NetworkCapabilities caps = cm.getNetworkCapabilities(net);
+                    if (caps == null) continue;
+                    if (!caps.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)) continue;
+                    if (!caps.hasCapability(NetworkCapabilities.NET_CAPABILITY_NOT_VPN)) continue;
+                    LinkProperties lp = cm.getLinkProperties(net);
+                    if (lp == null) continue;
+                    List<InetAddress> dns = lp.getDnsServers();
+                    if (dns.isEmpty()) continue;
+                    boolean validated = caps.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED);
+                    // Prefer a validated network; otherwise keep the first usable one.
+                    if (chosen == null || (validated && !chosenValidated)) {
+                        chosen = net;
+                        chosenValidated = validated;
+                        servers = new ArrayList<>(dns);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            Log.w(TAG, "Could not read underlying network DNS servers", e);
+        }
+
+        for (String s : FALLBACK_DNS) {
+            try {
+                InetAddress a = InetAddress.getByName(s);
+                if (!servers.contains(a)) servers.add(a);
+            } catch (Exception ignored) { }
+        }
+
+        underlyingNetwork = chosen;
+        upstreamServers = servers;
+    }
+
     private byte[] forwardDnsQuery(byte[] query) {
+        refreshUpstreamServers(false);
+
+        List<InetAddress> order = new ArrayList<>();
+        InetAddress good = lastGoodUpstream;
+        if (good != null) order.add(good);
+        for (InetAddress a : upstreamServers) {
+            if (!order.contains(a)) order.add(a);
+        }
+
+        for (InetAddress server : order) {
+            byte[] response = querySingleUpstream(query, server);
+            if (response != null) {
+                if (server != lastGoodUpstream) {
+                    lastGoodUpstream = server;
+                    Log.i(TAG, "Upstream DNS now " + server.getHostAddress());
+                }
+                return response;
+            }
+        }
+        Log.e(TAG, "All upstream DNS servers failed");
+        // Force a fresh look at the network on the next query.
+        upstreamRefreshedAt = 0;
+        lastGoodUpstream = null;
+        return null;
+    }
+
+    private byte[] querySingleUpstream(byte[] query, InetAddress server) {
         DatagramSocket socket = null;
         try {
             socket = new DatagramSocket();
+            // protect() keeps the socket out of the VPN; binding it to the
+            // underlying network as well makes IPv6 resolvers reachable on
+            // IPv6-only carriers even while the VPN is the default network.
             protect(socket);
-            InetAddress dnsServer = InetAddress.getByName(UPSTREAM_DNS);
-            DatagramPacket request = new DatagramPacket(query, query.length, dnsServer, DNS_PORT);
-            socket.setSoTimeout(5000);
+            Network net = underlyingNetwork;
+            if (net != null) {
+                try { net.bindSocket(socket); } catch (IOException e) { /* protect() is enough */ }
+            }
+            DatagramPacket request = new DatagramPacket(query, query.length, server, DNS_PORT);
+            socket.setSoTimeout(UPSTREAM_TIMEOUT_MS);
             socket.send(request);
             byte[] buf = new byte[4096];
             DatagramPacket response = new DatagramPacket(buf, buf.length);
             socket.receive(response);
             return Arrays.copyOf(buf, response.getLength());
         } catch (Exception e) {
-            Log.e(TAG, "Error forwarding DNS", e);
+            Log.w(TAG, "Upstream " + server.getHostAddress() + " failed: " + e.getMessage());
             return null;
         } finally {
             if (socket != null) socket.close();
