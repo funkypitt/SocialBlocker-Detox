@@ -30,3 +30,13 @@ Nothing else: same DNS VPN service, same scheduler, same UI.
 
 Available from `funkypitt`'s personal F-Droid repository — see the
 installation instructions at <https://gallaz.ch/eink>.
+
+## Crédits / Credits
+
+Basé sur / Based on [SocialBlocker](https://github.com/funkypitt/SocialBlocker) by Pierre Gallaz, GPL-3.0-only.
+
+© 2026 Pierre Gallaz. Développé avec [Claude Code](https://claude.com/claude-code) (Anthropic).
+Licence GPL-3.0-only, voir `LICENSE`.
+
+© 2026 Pierre Gallaz. Developed with [Claude Code](https://claude.com/claude-code) (Anthropic).
+GPL-3.0-only licence, see `LICENSE`.

@@ -1,0 +1,15 @@
+Social Detox est un outil de détox numérique volontaire : un VPN Android local qui intercepte les requêtes DNS des réseaux sociaux et les rejette silencieusement. Seul le DNS passe par l'interface virtuelle — pas de proxy distant, pas de certificat, le reste du trafic reste intact.
+
+C'est un fork de SocialBlocker sans la barrière par mot de passe. Vous pouvez lever le blocage quand vous voulez : la friction est le moment conscient où vous le désactivez, pas un mot de passe secret. Si vous avez besoin d'un vrai verrou (par exemple pour l'appareil d'un enfant), utilisez plutôt SocialBlocker.
+
+- Bascules par plateforme : YouTube, Instagram, TikTok, Reddit, X (Twitter), Substack
+- VPN local DNS uniquement — pas de proxy distant, pas de compte
+- Plages horaires quotidiennes autorisées (ex. 6-8,18-22) ; blocage en dehors
+- Défi de maths optionnel pour débloquer : cinq problèmes de difficulté croissante
+- Démarrage automatique au boot, service en avant-plan pour qu'Android ne l'arrête pas
+- Compatible avec le VPN permanent (Always-on VPN)
+- Fonctionne sur les opérateurs mobiles IPv6 uniquement
+
+Sans publicité, sans pistage.
+
+Pierre Gallaz · développé avec Claude Code
