@@ -18,6 +18,14 @@ object Hours {
         if (p.size == 2 && a != null && b != null && a in 0..23 && b in 0..23) Range(a, b) else null
     }
 
+    /** The hour blocking resumes, when [hour] is inside one of the allowed ranges; null outside them. */
+    fun openUntil(ranges: List<Range>, hour: Int): Int? =
+        ranges.firstOrNull { r -> if (r.start <= r.end) hour >= r.start && hour < r.end else hour >= r.start || hour < r.end }?.end
+
+    /** The next hour a range opens, seen from [hour] (outside the ranges); null without ranges. */
+    fun nextOpen(ranges: List<Range>, hour: Int): Int? =
+        ranges.minByOrNull { (it.start - hour + 24) % 24 }?.start
+
     fun format(ranges: List<Range>): String = ranges.joinToString(",")
 
     /** The short form for a secondary line: "6–8, 18–22". */

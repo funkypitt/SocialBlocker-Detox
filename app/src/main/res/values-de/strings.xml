@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Reader\'s Detox</string>
+    <string name="w_all_day">den ganzen Tag gesperrt</string>
+    <string name="w_open_until">erlaubte Stunden: offen bis %1$d:00</string>
+    <string name="w_open_at">gesperrt bis %1$d:00</string>
+    <string name="w_on">an</string>
+    <string name="w_off">aus</string>
+    <string name="widget_desc">Sperre an oder aus; beenden verlangt die Matheaufgaben, wenn sie aktiv sind</string>
     <string name="hours_locked">während der Sperre fixiert</string>
     <string name="app_title">Detox</string>
     <string name="action_ok">ok</string>

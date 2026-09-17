@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Reader\'s Detox</string>
+    <string name="w_all_day">bloqueado todo el día</string>
+    <string name="w_open_until">horas permitidas: abierto hasta las %1$d:00</string>
+    <string name="w_open_at">bloqueado hasta las %1$d:00</string>
+    <string name="w_on">sí</string>
+    <string name="w_off">no</string>
+    <string name="widget_desc">bloqueo sí o no; para pararlo pide los problemas de matemáticas si están activos</string>
     <string name="hours_locked">bloqueadas mientras dura el bloqueo</string>
     <string name="app_title">detox</string>
     <string name="action_ok">ok</string>

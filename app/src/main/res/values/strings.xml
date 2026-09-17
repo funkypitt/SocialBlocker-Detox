@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Reader\'s Detox</string>
+    <string name="w_all_day">blocked all day</string>
+    <string name="w_open_until">allowed hours: open until %1$d:00</string>
+    <string name="w_open_at">blocked until %1$d:00</string>
+    <string name="w_on">on</string>
+    <string name="w_off">off</string>
+    <string name="widget_desc">blocking on or off; stopping asks the maths problems when they are on</string>
     <string name="hours_locked">locked while blocking</string>
     <string name="app_title">detox</string>
     <string name="action_ok">ok</string>

@@ -74,6 +74,9 @@ class Nav {
     val current: Screen get() = stack.last()
     fun push(s: Screen) { stack.add(s) }
     fun pop() { if (stack.size > 1) stack.removeAt(stack.size - 1) }
+    /** Set when the widget asked to start blocking but the VPN consent is still missing. */
+    var startRequested by mutableStateOf(false)
+    fun home() { while (stack.size > 1) stack.removeAt(stack.size - 1) }
     /** Bumped whenever the blocking state may have changed; screens re-read the preferences. */
     var version by mutableIntStateOf(0)
 }
@@ -91,10 +94,7 @@ val SITES = listOf(
 )
 
 /** The hour blocking resumes, when the clock is inside one of the allowed ranges. */
-fun openUntil(ranges: List<Range>): Int? {
-    val h = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
-    return ranges.firstOrNull { r -> if (r.start <= r.end) h >= r.start && h < r.end else h >= r.start || h < r.end }?.end
-}
+fun openUntil(ranges: List<Range>): Int? = Hours.openUntil(ranges, Calendar.getInstance().get(Calendar.HOUR_OF_DAY))
 
 fun openVpnSettings(context: Context) {
     try { context.startActivity(Intent("android.net.vpn.SETTINGS")) } catch (e: Exception) {
@@ -142,11 +142,16 @@ fun HomeScreen(nav: Nav, app: App) {
     fun toggle() {
         tick()
         if (enabled) {
-            if (requireMath) nav.push(Screen.Challenge) else { Blocker.stop(context, b); nav.version++ }
+            Blocker.stopOrChallenge(context, b) { nav.push(Screen.Challenge) }
+            nav.version++
         } else {
             val prepare = VpnService.prepare(context)
             if (prepare != null) consent.launch(prepare) else started()
         }
+    }
+    // the widget sent us here to ask for the VPN consent, then start
+    LaunchedEffect(nav.startRequested) {
+        if (nav.startRequested) { nav.startRequested = false; if (!b.isBlockingEnabled) toggle() }
     }
     val actionLabel = stringResource(when { !enabled -> R.string.start; requireMath -> R.string.stop_math; else -> R.string.stop })
 

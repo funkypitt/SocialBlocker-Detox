@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 
+import com.parentcontrol.socialblocker.widget.DetoxWidget;
+
 public class BootReceiver extends BroadcastReceiver {
 
     @Override
@@ -22,6 +24,7 @@ public class BootReceiver extends BroadcastReceiver {
                     context.startService(vpnIntent);
                 }
             }
+            DetoxWidget.INSTANCE.refresh(context);
         }
     }
 }

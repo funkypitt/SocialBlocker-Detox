@@ -16,6 +16,8 @@ import android.os.ParcelFileDescriptor;
 import android.system.OsConstants;
 import android.util.Log;
 
+import com.parentcontrol.socialblocker.widget.DetoxWidget;
+
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -192,7 +194,9 @@ public class SocialBlockerVpnService extends VpnService {
             vpnInterface = builder.establish();
 
             if (vpnInterface == null) {
+                // the VPN consent is gone (another VPN app took it): blocking cannot run
                 Log.e(TAG, "Failed to establish VPN interface");
+                prefs(false);
                 stopSelf();
                 return;
             }
@@ -563,6 +567,18 @@ public class SocialBlockerVpnService extends VpnService {
                 .setContentIntent(pi)
                 .setOngoing(true)
                 .build();
+    }
+
+    /** The user switched the VPN off in the system settings, or another VPN replaced it. */
+    @Override
+    public void onRevoke() {
+        prefs(false);
+        stopVpn();
+    }
+
+    private void prefs(boolean enabled) {
+        new BlockPreferences(this).setBlockingEnabled(enabled);
+        DetoxWidget.INSTANCE.refresh(this);
     }
 
     @Override

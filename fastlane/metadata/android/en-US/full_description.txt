@@ -9,6 +9,7 @@ It is a fork of SocialBlocker with the password gate removed. You can lift the b
 - Auto-start on boot, foreground service so Android does not kill it
 - Compatible with Always-on VPN
 - Works on IPv6-only mobile carriers
+- Home-screen widget: on starts blocking, off stops it (through the maths problems when they are on)
 - Part of the Reader's family: black and white, text only, light or dark, adjustable text size and font
 - English, French, German, Spanish, Portuguese, Russian
 

@@ -40,6 +40,18 @@ an app update, and the allowed hours are locked while blocking, like the
 sites and the maths switch. Display name since 1.6.0: Reader's Detox (the
 application id is unchanged, so it updates the old Social Detox install).
 
+## Widget (1.7.0)
+
+A one-line home-screen widget: the state in words, and a switch. Off → on
+starts blocking at once when the VPN consent is already given, otherwise it
+opens the app on the consent dialog. On → off takes exactly the app's path
+(`Blocker.stopOrChallenge`): straight away, or the maths challenge when the
+gate is on. The switch is an invisible activity that decides at the moment of
+the tap. The widget is redrawn by every change of state (`Blocker`, the
+service's `onRevoke`, the boot/update receiver, leaving the app) and once an
+hour while its text depends on the allowed hours. Turning the VPN off in the
+system settings now counts as stopping.
+
 ## Install
 
 Available from `funkypitt`'s personal F-Droid repository — see the
