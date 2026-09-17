@@ -24,7 +24,19 @@ SocialBlocker repository.
   fork coexists with the original on the same device.
 - Display name: **Social Detox**.
 
-Nothing else: same DNS VPN service, same scheduler, same UI.
+Same DNS VPN service and scheduler as the original.
+
+## Reader's look (1.6.0)
+
+Since 1.6.0 the interface follows the Reader's apps (Reader's Notes, Tasks,
+Calendar…): black and white only, text rows, a ⋯ menu, prompts above the
+keyboard, light/dark, text size and font in the settings. The UI is Kotlin +
+Jetpack Compose (`ui/Theme.kt` and `ui/Common.kt` are the Reader's kit); the VPN
+service, preferences, schedule check and boot receiver are the original Java.
+The allowed hours are a list of ranges instead of a typed `6-8,18-22` string,
+the maths gate is a screen of the app, and the app speaks English, French,
+German, Spanish, Portuguese and Russian. The blocker also restarts itself after
+an app update.
 
 ## Install
 

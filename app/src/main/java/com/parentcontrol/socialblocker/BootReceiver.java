@@ -9,7 +9,9 @@ public class BootReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        if (Intent.ACTION_BOOT_COMPLETED.equals(intent.getAction())) {
+        // after a reboot, and after an update of the app (which kills the running VPN)
+        if (Intent.ACTION_BOOT_COMPLETED.equals(intent.getAction())
+                || Intent.ACTION_MY_PACKAGE_REPLACED.equals(intent.getAction())) {
             BlockPreferences prefs = new BlockPreferences(context);
             if (prefs.isBlockingEnabled()) {
                 Intent vpnIntent = new Intent(context, SocialBlockerVpnService.class);

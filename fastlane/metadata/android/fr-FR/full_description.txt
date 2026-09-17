@@ -9,6 +9,8 @@ C'est un fork de SocialBlocker sans la barrière par mot de passe. Vous pouvez l
 - Démarrage automatique au boot, service en avant-plan pour qu'Android ne l'arrête pas
 - Compatible avec le VPN permanent (Always-on VPN)
 - Fonctionne sur les opérateurs mobiles IPv6 uniquement
+- De la famille Reader's : noir et blanc, texte seul, clair ou sombre, taille du texte et police réglables
+- Anglais, français, allemand, espagnol, portugais, russe
 
 Sans publicité, sans pistage.
 
