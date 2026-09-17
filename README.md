@@ -1,4 +1,4 @@
-# Social Detox
+# Reader's Detox (formerly Social Detox)
 
 Fork of [SocialBlocker](https://github.com/funkypitt/SocialBlocker) with the
 password gate removed. Same DNS-based blocking for YouTube, Instagram and
@@ -22,7 +22,7 @@ SocialBlocker repository.
   `PasswordActivity`).
 - Application id changed to `com.parentcontrol.socialblocker.detox` so this
   fork coexists with the original on the same device.
-- Display name: **Social Detox**.
+- Display name: **Reader's Detox** (was **Social Detox** up to 1.5.1).
 
 Same DNS VPN service and scheduler as the original.
 
@@ -36,7 +36,9 @@ service, preferences, schedule check and boot receiver are the original Java.
 The allowed hours are a list of ranges instead of a typed `6-8,18-22` string,
 the maths gate is a screen of the app, and the app speaks English, French,
 German, Spanish, Portuguese and Russian. The blocker also restarts itself after
-an app update.
+an app update, and the allowed hours are locked while blocking, like the
+sites and the maths switch. Display name since 1.6.0: Reader's Detox (the
+application id is unchanged, so it updates the old Social Detox install).
 
 ## Install
 

@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="app_name">Reader\'s Detox</string>
+    <string name="hours_locked">trancadas durante o bloqueio</string>
     <string name="app_title">detox</string>
     <string name="action_ok">ok</string>
     <string name="action_cancel">cancelar</string>
@@ -43,7 +45,7 @@
     <string name="wrong">errado, tente de novo</string>
     <string name="enter_number">um número, por favor</string>
     <string name="hint">dica: %1$s</string>
-    <string name="always_on_hint">Para a proteção máxima, torne o Social Detox a VPN sempre ativa: Definições › Rede › VPN › Social Detox › VPN sempre ativa.</string>
+    <string name="always_on_hint">Para a proteção máxima, torne o Reader\'s Detox a VPN sempre ativa: Definições › Rede › VPN › Reader\'s Detox › VPN sempre ativa.</string>
     <string name="open_vpn_settings">abrir as definições de VPN</string>
     <string name="later">mais tarde</string>
     <string name="always_on">VPN sempre ativa</string>
@@ -62,7 +64,7 @@
     <string name="off">inativo</string>
     <string name="about">bloqueia as redes sociais neste telefone</string>
     <string name="credits">Pierre Gallaz · desenvolvido com Claude Code</string>
-    <string name="vpn_notification_title">Social Detox está a bloquear</string>
+    <string name="vpn_notification_title">Reader\'s Detox está a bloquear</string>
     <string name="vpn_notification_text">redes sociais bloqueadas</string>
     <string name="vpn_channel_name">bloqueio</string>
     <string name="q_percent">Quanto é %1$d %% de %2$d?</string>

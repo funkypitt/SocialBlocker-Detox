@@ -172,7 +172,7 @@ public class SocialBlockerVpnService extends VpnService {
 
         try {
             Builder builder = new Builder();
-            builder.setSession("Social Blocker");
+            builder.setSession(getString(R.string.app_name));
             builder.addAddress(VPN_ADDRESS, 32);
             builder.setMtu(1500);
             builder.addDnsServer(VPN_DNS);

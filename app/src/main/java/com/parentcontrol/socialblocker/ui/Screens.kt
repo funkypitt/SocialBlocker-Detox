@@ -185,10 +185,14 @@ fun HomeScreen(nav: Nav, app: App) {
                 }
                 Rule(Modifier.padding(vertical = 8.dp))
                 // ---- when, and what stopping costs ----
-                TextRow(
-                    if (ranges.isEmpty()) stringResource(R.string.hours_none) else Hours.short(ranges),
-                    secondary = stringResource(R.string.hours), size = typo.title
-                ) { nav.push(Screen.Hours) }
+                // while blocking the hours cannot be widened either
+                Column(
+                    Modifier.fillMaxWidth().noRippleClickable(enabled = !enabled) { nav.push(Screen.Hours) }
+                        .padding(horizontal = rowPadH, vertical = rowPadV * 0.7f)
+                ) {
+                    T(if (ranges.isEmpty()) stringResource(R.string.hours_none) else Hours.short(ranges), size = typo.title, color = if (enabled) colors.dim else colors.fg, maxLines = 1)
+                    Small(stringResource(R.string.hours) + if (enabled) " · " + stringResource(R.string.locked) else "", maxLines = 2)
+                }
                 // the gate cannot be removed while blocking, or unticking it would be the way out
                 Column(
                     Modifier.fillMaxWidth().noRippleClickable(enabled = !enabled) { tick(); b.setRequireMathToUnblock(!requireMath); nav.version++ }
@@ -203,10 +207,10 @@ fun HomeScreen(nav: Nav, app: App) {
             TextRow(actionLabel, size = typo.title) { toggle() }
             Box(Modifier.windowInsetsPadding(WindowInsets.navigationBars))
         }
-        if (menu) TextMenu(null, listOf(
-            MenuItem(actionLabel) { toggle() },
-            MenuItem(stringResource(R.string.hours)) { nav.push(Screen.Hours) }
-        ), onDismiss = { menu = false }, footer = listOf(
+        if (menu) TextMenu(null, buildList {
+            add(MenuItem(actionLabel) { toggle() })
+            if (!enabled) add(MenuItem(stringResource(R.string.hours)) { nav.push(Screen.Hours) })
+        }, onDismiss = { menu = false }, footer = listOf(
             MenuItem(if (colors.isDark) stringResource(R.string.theme_light) else stringResource(R.string.theme_dark)) { app.prefs.toggleTheme(colors.isDark) },
             MenuItem(stringResource(R.string.settings)) { nav.push(Screen.Settings) }
         ))
@@ -256,6 +260,8 @@ fun HoursScreen(nav: Nav, app: App) {
     val typo = LocalTypo.current
     val b = app.block
     val ranges = remember(nav.version) { Hours.parse(b.schedule) }
+    val locked = remember(nav.version) { b.isBlockingEnabled }
+    val colors = LocalColors.current
     var picked by remember { mutableStateOf<Int?>(null) }
     var ask by remember { mutableStateOf<HourAsk?>(null) }
     fun save(list: List<Range>) { b.schedule = Hours.format(list.distinct().sortedBy { it.start }); nav.version++ }
@@ -266,22 +272,29 @@ fun HoursScreen(nav: Nav, app: App) {
             Column(Modifier.weight(1f).verticalScroll(rememberScrollState())) {
                 Small(stringResource(R.string.hours_hint), Modifier.padding(horizontal = rowPadH).padding(top = 16.dp, bottom = 6.dp), maxLines = 6)
                 ranges.forEachIndexed { i, r ->
-                    TextRow(r.label, secondary = if (r.start > r.end) stringResource(R.string.overnight) else null) { picked = i }
+                    Column(
+                        Modifier.fillMaxWidth().noRippleClickable(enabled = !locked) { picked = i }
+                            .padding(horizontal = rowPadH, vertical = rowPadV * 0.7f)
+                    ) {
+                        T(r.label, color = if (locked) colors.dim else colors.fg, maxLines = 1)
+                        if (r.start > r.end) Small(stringResource(R.string.overnight), maxLines = 1)
+                    }
                 }
                 if (ranges.isEmpty()) Small(stringResource(R.string.hours_none), Modifier.padding(horizontal = rowPadH, vertical = 10.dp))
             }
             Rule()
-            TextRow(stringResource(R.string.new_hours), size = typo.title) { ask = HourAsk(-1) }
+            if (locked) Small(stringResource(R.string.hours_locked), Modifier.padding(horizontal = rowPadH, vertical = rowPadV))
+            else TextRow(stringResource(R.string.new_hours), size = typo.title) { ask = HourAsk(-1) }
             Box(Modifier.windowInsetsPadding(WindowInsets.navigationBars))
         }
-        picked?.let { i ->
+        if (!locked) picked?.let { i ->
             val r = ranges.getOrNull(i)
             if (r != null) TextMenu(r.label, listOf(
                 MenuItem(stringResource(R.string.change)) { ask = HourAsk(i) },
                 MenuItem(stringResource(R.string.delete)) { save(ranges.filterIndexed { j, _ -> j != i }) }
             ), onDismiss = { picked = null })
         }
-        ask?.let { a ->
+        if (!locked) ask?.let { a ->
             val old = ranges.getOrNull(a.index)
             if (a.from == null) {
                 HourPrompt(stringResource(R.string.from_prompt), old?.start, reject = null, onDone = { h -> ask = a.copy(from = h) }, onCancel = { ask = null })

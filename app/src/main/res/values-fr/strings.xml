@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="app_name">Reader\'s Detox</string>
+    <string name="hours_locked">verrouillées pendant le blocage</string>
     <string name="app_title">détox</string>
     <string name="action_ok">ok</string>
     <string name="action_cancel">annuler</string>
@@ -43,7 +45,7 @@
     <string name="wrong">faux, essayez encore</string>
     <string name="enter_number">un nombre, s\'il vous plaît</string>
     <string name="hint">indice : %1$s</string>
-    <string name="always_on_hint">Pour une protection maximale, faites de Social Detox le VPN permanent : Paramètres › Réseau › VPN › Social Detox › VPN permanent.</string>
+    <string name="always_on_hint">Pour une protection maximale, faites de Reader\'s Detox le VPN permanent : Paramètres › Réseau › VPN › Reader\'s Detox › VPN permanent.</string>
     <string name="open_vpn_settings">ouvrir les paramètres VPN</string>
     <string name="later">plus tard</string>
     <string name="always_on">VPN permanent</string>
@@ -62,7 +64,7 @@
     <string name="off">inactif</string>
     <string name="about">bloque les réseaux sociaux sur ce téléphone</string>
     <string name="credits">Pierre Gallaz · développé avec Claude Code</string>
-    <string name="vpn_notification_title">Social Detox bloque</string>
+    <string name="vpn_notification_title">Reader\'s Detox bloque</string>
     <string name="vpn_notification_text">réseaux sociaux bloqués</string>
     <string name="vpn_channel_name">blocage</string>
     <string name="q_percent">Combien font %1$d %% de %2$d ?</string>

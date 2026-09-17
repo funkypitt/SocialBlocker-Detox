@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Social Detox</string>
+    <string name="app_name">Reader\'s Detox</string>
+    <string name="hours_locked">locked while blocking</string>
     <string name="app_title">detox</string>
     <string name="action_ok">ok</string>
     <string name="action_cancel">cancel</string>
@@ -44,7 +45,7 @@
     <string name="wrong">wrong answer, try again</string>
     <string name="enter_number">a number, please</string>
     <string name="hint">hint: %1$s</string>
-    <string name="always_on_hint">For the strongest protection, make Social Detox the always-on VPN: Settings › Network › VPN › Social Detox › Always-on VPN.</string>
+    <string name="always_on_hint">For the strongest protection, make Reader\'s Detox the always-on VPN: Settings › Network › VPN › Reader\'s Detox › Always-on VPN.</string>
     <string name="open_vpn_settings">open VPN settings</string>
     <string name="later">later</string>
     <string name="always_on">always-on VPN</string>
@@ -63,7 +64,7 @@
     <string name="off">off</string>
     <string name="about">blocks social networks, on this phone</string>
     <string name="credits">Pierre Gallaz · developed with Claude Code</string>
-    <string name="vpn_notification_title">Social Detox is blocking</string>
+    <string name="vpn_notification_title">Reader\'s Detox is blocking</string>
     <string name="vpn_notification_text">social networks blocked</string>
     <string name="vpn_channel_name">blocking</string>
     <string name="q_percent">What is %1$d%% of %2$d?</string>

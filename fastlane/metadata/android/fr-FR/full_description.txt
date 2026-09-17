@@ -1,4 +1,4 @@
-Social Detox est un outil de détox numérique volontaire : un VPN Android local qui intercepte les requêtes DNS des réseaux sociaux et les rejette silencieusement. Seul le DNS passe par l'interface virtuelle — pas de proxy distant, pas de certificat, le reste du trafic reste intact.
+Reader's Detox est un outil de détox numérique volontaire : un VPN Android local qui intercepte les requêtes DNS des réseaux sociaux et les rejette silencieusement. Seul le DNS passe par l'interface virtuelle — pas de proxy distant, pas de certificat, le reste du trafic reste intact.
 
 C'est un fork de SocialBlocker sans la barrière par mot de passe. Vous pouvez lever le blocage quand vous voulez : la friction est le moment conscient où vous le désactivez, pas un mot de passe secret. Si vous avez besoin d'un vrai verrou (par exemple pour l'appareil d'un enfant), utilisez plutôt SocialBlocker.
 

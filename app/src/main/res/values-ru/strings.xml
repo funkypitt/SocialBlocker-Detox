@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="app_name">Reader\'s Detox</string>
+    <string name="hours_locked">закреплены на время блокировки</string>
     <string name="app_title">детокс</string>
     <string name="action_ok">ок</string>
     <string name="action_cancel">отмена</string>
@@ -43,7 +45,7 @@
     <string name="wrong">неверно, попробуйте ещё</string>
     <string name="enter_number">нужно число</string>
     <string name="hint">подсказка: %1$s</string>
-    <string name="always_on_hint">Для максимальной защиты сделайте Social Detox постоянным VPN: Настройки › Сеть › VPN › Social Detox › Постоянный VPN.</string>
+    <string name="always_on_hint">Для максимальной защиты сделайте Reader\'s Detox постоянным VPN: Настройки › Сеть › VPN › Reader\'s Detox › Постоянный VPN.</string>
     <string name="open_vpn_settings">открыть настройки VPN</string>
     <string name="later">позже</string>
     <string name="always_on">постоянный VPN</string>
@@ -62,7 +64,7 @@
     <string name="off">выкл</string>
     <string name="about">блокирует соцсети на этом телефоне</string>
     <string name="credits">Pierre Gallaz · разработано с Claude Code</string>
-    <string name="vpn_notification_title">Social Detox блокирует</string>
+    <string name="vpn_notification_title">Reader\'s Detox блокирует</string>
     <string name="vpn_notification_text">соцсети заблокированы</string>
     <string name="vpn_channel_name">блокировка</string>
     <string name="q_percent">Сколько будет %1$d %% от %2$d?</string>
