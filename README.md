@@ -1,3 +1,5 @@
+![Reader's Detox](docs/banner.png)
+
 # Reader's Detox (formerly Social Detox)
 
 Fork of [SocialBlocker](https://github.com/funkypitt/SocialBlocker) with the
@@ -66,3 +68,7 @@ Licence GPL-3.0-only, voir `LICENSE`.
 
 © 2026 Pierre Gallaz. Developed with [Claude Code](https://claude.com/claude-code) (Anthropic).
 GPL-3.0-only licence, see `LICENSE`.
+
+## Captures d'écran
+
+<img src="docs/screenshot-1.png" width="30%">
