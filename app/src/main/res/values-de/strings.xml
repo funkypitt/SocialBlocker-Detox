@@ -16,10 +16,10 @@
     <string name="detail_off">alle Seiten öffnen normal</string>
     <string name="detail_nothing">keine Seite gewählt: nichts zu sperren</string>
     <string name="detail_all_day">%1$s den ganzen Tag gesperrt</string>
-    <string name="detail_hours">%1$s gesperrt ausser %2$s</string>
+    <string name="detail_hours">%1$s ausserhalb von %2$s gesperrt</string>
     <string name="detail_open_now">in den erlaubten Stunden: jetzt offen, ab %1$d:00 wieder gesperrt</string>
     <string name="sites">Seiten</string>
-    <string name="sites_locked">während der Sperre fixiert — nur Substack bleibt frei</string>
+    <string name="sites_locked">während der Sperre fixiert, ausser Substack</string>
     <string name="blocked">gesperrt</string>
     <string name="open">offen</string>
     <string name="hours">erlaubte Stunden</string>
@@ -65,6 +65,12 @@
     <string name="colours">Farben</string>
     <string name="text_size">Textgrösse</string>
     <string name="font">Schrift</string>
+    <string name="font_sans">Sans</string>
+    <string name="font_serif">Serif</string>
+    <string name="font_mono">Mono</string>
+    <string name="size_small">klein</string>
+    <string name="size_medium">mittel</string>
+    <string name="size_large">gross</string>
     <string name="haptics">haptisches Feedback</string>
     <string name="on">an</string>
     <string name="off">aus</string>
@@ -79,7 +85,7 @@
     <string name="q_system">Wenn x + y = %1$d und x − y = %2$d, wie gross ist x?</string>
     <string name="q_series">Summe einer arithmetischen Reihe: erstes Glied %1$d, Differenz %2$d, %3$d Glieder. Wie gross ist die Summe?</string>
     <string name="q_mod">Wie viel ist %1$s mod %2$d?</string>
-    <string name="q_perm">Auf wie viele Arten lassen sich %1$d von %2$d verschiedenen Dingen anordnen? P(%2$d,%1$d)</string>
+    <string name="q_perm">Auf wie viele Arten lassen sich %1$d aus %2$d verschiedenen Dingen anordnen? P(%2$d,%1$d)</string>
     <string name="q_sum_roots">%1$s. Finde die Summe beider Nullstellen.</string>
     <string name="h_order">Punkt vor Strich: zuerst multiplizieren.</string>
     <string name="h_square_first">Zuerst %1$s berechnen, dann abziehen.</string>

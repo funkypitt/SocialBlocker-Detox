@@ -19,7 +19,7 @@
     <string name="detail_hours">%1$s bloqueados fora de %2$s</string>
     <string name="detail_open_now">dentro das horas permitidas: aberto agora, bloqueado de novo às %1$d:00</string>
     <string name="sites">sites</string>
-    <string name="sites_locked">trancados durante o bloqueio — só o Substack fica livre</string>
+    <string name="sites_locked">trancados durante o bloqueio, exceto o Substack</string>
     <string name="blocked">bloqueado</string>
     <string name="open">aberto</string>
     <string name="hours">horas permitidas</string>
@@ -65,6 +65,12 @@
     <string name="colours">cores</string>
     <string name="text_size">tamanho do texto</string>
     <string name="font">tipo de letra</string>
+    <string name="font_sans">sem serifa</string>
+    <string name="font_serif">com serifa</string>
+    <string name="font_mono">mono</string>
+    <string name="size_small">pequeno</string>
+    <string name="size_medium">médio</string>
+    <string name="size_large">grande</string>
     <string name="haptics">vibração</string>
     <string name="on">ativo</string>
     <string name="off">inativo</string>

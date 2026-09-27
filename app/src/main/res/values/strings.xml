@@ -19,7 +19,7 @@
     <string name="detail_hours">%1$s blocked outside %2$s</string>
     <string name="detail_open_now">inside the allowed hours: open now, blocked again at %1$d:00</string>
     <string name="sites">sites</string>
-    <string name="sites_locked">locked while blocking — only Substack stays free</string>
+    <string name="sites_locked">locked while blocking, except Substack</string>
     <string name="blocked">blocked</string>
     <string name="open">open</string>
     <string name="hours">allowed hours</string>
@@ -65,10 +65,16 @@
     <string name="colours">colours</string>
     <string name="text_size">text size</string>
     <string name="font">font</string>
+    <string name="font_sans">sans-serif</string>
+    <string name="font_serif">serif</string>
+    <string name="font_mono">mono</string>
+    <string name="size_small">small</string>
+    <string name="size_medium">medium</string>
+    <string name="size_large">large</string>
     <string name="haptics">haptic tick</string>
     <string name="on">on</string>
     <string name="off">off</string>
-    <string name="about">blocks social networks, on this phone</string>
+    <string name="about">blocks social networks on this phone</string>
     <string name="credits">Pierre Gallaz · developed with Claude Code</string>
     <string name="vpn_notification_title">Reader\'s Detox is blocking</string>
     <string name="vpn_notification_text">social networks blocked</string>
