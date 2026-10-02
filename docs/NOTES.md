@@ -15,6 +15,19 @@ Reference material moved out of the README.
 
 Same DNS VPN service and scheduler as the original.
 
+## Name lookups (1.7.2)
+
+Only DNS reaches the app. A lookup for a blocked site is answered on the phone;
+every other one is forwarded unchanged. `UpstreamOrder` decides to whom: the
+DNS servers of the current network first, for every lookup. Only when none of
+them answers within 2.5 s each is the lookup sent to Quad9 (9.9.9.9,
+149.112.112.112, 2620:fe::fe, 2620:fe::9), which is what keeps the phone
+working on a network whose own DNS is silent. So that such a network does not
+cost a round of timeouts on every lookup, Quad9 is then asked first for one
+minute; after that one lookup tries the network's servers again, and an answer
+from them, or a change of network, puts them back in front at once. Quad9 is
+never kept as the preferred server. Unit tests: `./gradlew testDebugUnitTest`.
+
 ## Reader's look (1.6.0)
 
 Since 1.6.0 the interface follows the Reader's apps (Reader's Notes, Tasks,

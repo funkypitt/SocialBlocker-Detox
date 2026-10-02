@@ -2,8 +2,11 @@
 
 # Reader's Detox (formerly Social Detox)
 
-Blocks social networks on the phone with a local DNS VPN. The filtering happens on the device:
-no server sees your traffic, no account. The hours you set stay locked while blocking is on.
+Blocks social networks on the phone with a local DNS VPN. The filtering happens on the device,
+with no account. Only the names of the sites you look up pass through the app, never the traffic
+itself. They go to your network's own name servers as usual; if those do not answer, the app asks
+[Quad9](https://quad9.net), a Swiss non-profit name service, so that the phone keeps working.
+The hours you set stay locked while blocking is on.
 Works on IPv6-only carriers. A fork of [SocialBlocker](https://github.com/funkypitt/SocialBlocker)
 without the password: a detox you impose on yourself, not a parental control — for a child's
 device, use the original.

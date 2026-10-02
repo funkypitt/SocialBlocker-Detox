@@ -13,6 +13,7 @@ import android.net.NetworkCapabilities;
 import android.net.VpnService;
 import android.os.Build;
 import android.os.ParcelFileDescriptor;
+import android.os.SystemClock;
 import android.system.OsConstants;
 import android.util.Log;
 
@@ -44,8 +45,11 @@ import java.util.concurrent.Executors;
  *    IPv6-only mobile networks (T-Mobile US and friends, 464XLAT) meant the
  *    whole phone lost connectivity. We now explicitly let IPv6 bypass the VPN.
  *  - Upstream queries go to the underlying network's own resolvers first
- *    (IPv4 or IPv6), then to public resolvers of both families. A hard-coded
- *    8.8.8.8 is useless on networks that block or lack IPv4 transit.
+ *    (IPv4 or IPv6), for every lookup. Only when those stay silent is a
+ *    public resolver asked (Quad9, both families), so the phone keeps
+ *    working on networks whose own DNS does not answer. The order is
+ *    decided in UpstreamOrder. A single hard-coded IPv4 resolver is useless
+ *    on networks that block or lack IPv4 transit.
  *  - Queries are answered from a thread pool so one slow resolver cannot
  *    stall every DNS lookup on the device.
  */
@@ -59,11 +63,6 @@ public class SocialBlockerVpnService extends VpnService {
     private static final String VPN_DNS = "10.0.0.1";
     private static final int DNS_PORT = 53;
 
-    /** Public resolvers tried after the underlying network's own servers. */
-    private static final String[] FALLBACK_DNS = {
-            "8.8.8.8", "1.1.1.1",
-            "2001:4860:4860::8888", "2606:4700:4700::1111"
-    };
     private static final int UPSTREAM_TIMEOUT_MS = 2500;
     private static final long UPSTREAM_CACHE_MS = 15_000;
     private static final int RESOLVER_THREADS = 8;
@@ -75,9 +74,8 @@ public class SocialBlockerVpnService extends VpnService {
 
     // Cached view of the underlying (non-VPN) network and its resolvers.
     private volatile Network underlyingNetwork;
-    private volatile List<InetAddress> upstreamServers = new ArrayList<>();
     private volatile long upstreamRefreshedAt = 0;
-    private volatile InetAddress lastGoodUpstream;
+    private final UpstreamOrder upstream = new UpstreamOrder();
 
     // ---- Per-platform domain lists ----
 
@@ -205,7 +203,7 @@ public class SocialBlockerVpnService extends VpnService {
             resolverPool = Executors.newFixedThreadPool(RESOLVER_THREADS);
             refreshUpstreamServers(true);
             new Thread(this::packetLoop, "VPN-PacketLoop").start();
-            Log.i(TAG, "VPN started, upstream=" + upstreamServers);
+            Log.i(TAG, "VPN started, upstream=" + upstream.order(SystemClock.elapsedRealtime()));
 
         } catch (Exception e) {
             Log.e(TAG, "Error starting VPN", e);
@@ -401,8 +399,9 @@ public class SocialBlockerVpnService extends VpnService {
 
     /**
      * Refresh the list of upstream resolvers: the underlying (non-VPN)
-     * network's own DNS servers first, then public fallbacks of both
-     * families. Cheap enough to call before every forward; throttled.
+     * network's own DNS servers, and the public fallback of both families
+     * for when they stay silent. Cheap enough to call before every forward;
+     * throttled.
      */
     private void refreshUpstreamServers(boolean force) {
         long now = System.currentTimeMillis();
@@ -437,41 +436,36 @@ public class SocialBlockerVpnService extends VpnService {
             Log.w(TAG, "Could not read underlying network DNS servers", e);
         }
 
-        for (String s : FALLBACK_DNS) {
+        List<InetAddress> fallback = new ArrayList<>();
+        for (String s : UpstreamOrder.FALLBACK_DNS) {
             try {
-                InetAddress a = InetAddress.getByName(s);
-                if (!servers.contains(a)) servers.add(a);
+                fallback.add(InetAddress.getByName(s));
             } catch (Exception ignored) { }
         }
 
         underlyingNetwork = chosen;
-        upstreamServers = servers;
+        upstream.setServers(servers, fallback);
     }
 
     private byte[] forwardDnsQuery(byte[] query) {
         refreshUpstreamServers(false);
 
-        List<InetAddress> order = new ArrayList<>();
-        InetAddress good = lastGoodUpstream;
-        if (good != null) order.add(good);
-        for (InetAddress a : upstreamServers) {
-            if (!order.contains(a)) order.add(a);
-        }
-
-        for (InetAddress server : order) {
+        // The network's own servers first, the fallback after them (see UpstreamOrder).
+        List<InetAddress> failed = new ArrayList<>();
+        for (InetAddress server : upstream.order(SystemClock.elapsedRealtime())) {
             byte[] response = querySingleUpstream(query, server);
             if (response != null) {
-                if (server != lastGoodUpstream) {
-                    lastGoodUpstream = server;
-                    Log.i(TAG, "Upstream DNS now " + server.getHostAddress());
+                if (!failed.isEmpty() && !upstream.isNetworkServer(server)) {
+                    Log.i(TAG, "Network DNS silent, answered by fallback " + server.getHostAddress());
                 }
+                upstream.answered(server, failed, SystemClock.elapsedRealtime());
                 return response;
             }
+            failed.add(server);
         }
         Log.e(TAG, "All upstream DNS servers failed");
         // Force a fresh look at the network on the next query.
         upstreamRefreshedAt = 0;
-        lastGoodUpstream = null;
         return null;
     }
 

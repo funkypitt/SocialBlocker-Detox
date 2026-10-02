@@ -12,8 +12,8 @@ android {
         applicationId = "com.parentcontrol.socialblocker.detox"
         minSdk = 24
         targetSdk = 34
-        versionCode = 10
-        versionName = "1.7.1-detox"
+        versionCode = 11
+        versionName = "1.7.2-detox"
     }
 
     buildTypes { release { isMinifyEnabled = false } }
@@ -32,4 +32,5 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.8.7")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0")
     debugImplementation("androidx.compose.ui:ui-tooling")
+    testImplementation("junit:junit:4.13.2")
 }

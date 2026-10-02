@@ -1,10 +1,12 @@
 Reader's Detox is a self-imposed digital detox tool: a local Android VPN that intercepts DNS queries for social networks and silently drops them. Only DNS is routed through the virtual interface — there is no upstream proxy and no certificate, so the rest of your traffic is untouched.
 
+Only the names of the sites you look up pass through the app, never the traffic itself. They go to your network's own name servers as usual; if those do not answer, the app asks Quad9, a Swiss non-profit name service, so that the phone keeps working.
+
 It is a fork of SocialBlocker with the password gate removed. You can lift the block any time you want: the friction is the conscious moment of toggling it, not a secret password. If you need an actual lock (e.g. for a child's device), use the original SocialBlocker instead.
 
 - Per-platform toggles: YouTube, Instagram, TikTok, Reddit, X (Twitter), Substack
 - Local DNS-only VPN — no upstream proxy, no account
-- Daily allowed time ranges (e.g. 6-8,18-22); blocking outside them
+- Allowed hours: one or several ranges a day when the sites open (e.g. 6:00 – 8:00 and 18:00 – 22:00); blocked the rest of the day
 - Optional maths challenge to unblock: solve five increasingly difficult problems
 - Auto-start on boot, foreground service so Android does not kill it
 - Compatible with Always-on VPN
