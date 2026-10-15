@@ -6,7 +6,7 @@ Blocks social networks on the phone with a local DNS VPN. The filtering happens 
 with no account. Only the names of the sites you look up pass through the app, never the traffic
 itself. They go to your network's own name servers as usual; if those do not answer, the app asks
 [Quad9](https://quad9.net), a Swiss non-profit name service, so that the phone keeps working.
-The hours you set stay locked while blocking is on.
+The hours and the daily budget you set stay locked while blocking is on.
 Works on IPv6-only carriers. A fork of [SocialBlocker](https://github.com/funkypitt/SocialBlocker)
 without the password: a detox you impose on yourself, not a parental control — for a child's
 device, use the original.
@@ -17,7 +17,11 @@ device, use the original.
   Android asks once for the VPN consent.
 * Allowed hours: a list of ranges during which the sites open; none means blocked all day. A
   range ending earlier than it starts runs past midnight.
-* While blocking, the sites, the hours and the maths switch are locked (only Substack stays
+* Daily budget: a number of minutes a day in the apps of the chosen sites (YouTube, Instagram,
+  TikTok, Reddit, X, Substack and their usual clients). The sites stay open until the minutes
+  are spent, then they are blocked until midnight. Counted in the apps, not in a browser, with
+  the phone's usage access. With hours too, both apply.
+* While blocking, the sites, the hours, the budget and the maths switch are locked (only Substack stays
   free). To change them, stop first.
 * Optional gate: five maths problems, each harder than the last, before blocking stops.
 * Widget: the state in words, and a switch. Turning it off takes the app's path, maths included.

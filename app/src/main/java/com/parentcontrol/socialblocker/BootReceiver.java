@@ -24,6 +24,7 @@ public class BootReceiver extends BroadcastReceiver {
                     context.startService(vpnIntent);
                 }
             }
+            BudgetMonitor.INSTANCE.measure(context);
             DetoxWidget.INSTANCE.refresh(context);
         }
     }

@@ -17,6 +17,7 @@ import androidx.compose.ui.platform.LocalView
 import androidx.core.content.ContextCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsControllerCompat
+import com.parentcontrol.socialblocker.ui.BudgetScreen
 import com.parentcontrol.socialblocker.ui.ChallengeScreen
 import com.parentcontrol.socialblocker.ui.HomeScreen
 import com.parentcontrol.socialblocker.ui.HoursScreen
@@ -54,6 +55,7 @@ class MainActivity : ComponentActivity() {
                 when (nav.current) {
                     Screen.Home -> HomeScreen(nav, app)
                     Screen.Hours -> HoursScreen(nav, app)
+                    Screen.Budget -> BudgetScreen(nav, app)
                     Screen.Challenge -> ChallengeScreen(nav, app)
                     Screen.Settings -> SettingsScreen(nav, app)
                 }
@@ -83,7 +85,9 @@ class MainActivity : ComponentActivity() {
 
     override fun onResume() {
         super.onResume()
-        // the service may have stopped itself, or the battery setting changed meanwhile
+        // the service may have stopped itself, or the battery setting changed meanwhile;
+        // and the day's minutes are counted again, for the state band
+        BudgetMonitor.measure(this)
         nav.version++
     }
 

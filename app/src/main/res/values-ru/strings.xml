@@ -94,4 +94,51 @@
     <string name="h_sqrt">Какое число в квадрате даёт %1$d?</string>
     <string name="h_add_equations">Сложите оба уравнения.</string>
     <string name="h_mod">Вычислите %1$s, затем остаток от деления на %2$d.</string>
+    <!-- дневной лимит (1.8.0) -->
+    <string name="budget">дневной лимит</string>
+    <string name="hours_none_budget">нет — решает только лимит</string>
+    <string name="budget_none">без лимита</string>
+    <string name="budget_minutes">минут в день в приложениях выбранных сайтов</string>
+    <string name="budget_hint">Приложения выбранных сайтов остаются открытыми, пока эти минуты не израсходованы; затем сайты заблокированы до полуночи. Минуты считаются в самих приложениях, не в браузере. Разрешённые часы остаются в силе: вне их сайты заблокированы, сколько бы ни осталось. Для подсчёта нужен доступ к данным об использовании телефона, который даётся один раз в настройках системы.</string>
+    <string name="budget_prompt">минут в день (0 = без лимита)</string>
+    <string name="budget_bad">(0–1440)</string>
+    <string name="usage_ok">доступ к использованию: дан</string>
+    <string name="usage_fix">доступ к использованию: нужен — нажмите, чтобы разрешить</string>
+    <string name="usage_hint">время по приложениям, считает телефон</string>
+    <string name="budget_today_hint">насчитано сегодня в приложениях ниже</string>
+    <string name="budget_apps">приложения, которые считаются на этом телефоне</string>
+    <string name="budget_no_app">нет приложения: ничего не считается</string>
+    <string name="detail_budget_noaccess">%1$s: дневной лимит не считается без доступа к использованию</string>
+    <string name="w_budget_spent">лимит исчерпан: заблокировано до полуночи</string>
+    <string name="w_budget_noaccess">лимит: нет доступа к использованию</string>
+    <plurals name="budget_value">
+        <item quantity="one">%1$d минута в день</item>
+        <item quantity="few">%1$d минуты в день</item>
+        <item quantity="many">%1$d минут в день</item>
+        <item quantity="other">%1$d минут в день</item>
+    </plurals>
+    <plurals name="budget_today">
+        <item quantity="one">%1$d минута сегодня</item>
+        <item quantity="few">%1$d минуты сегодня</item>
+        <item quantity="many">%1$d минут сегодня</item>
+        <item quantity="other">%1$d минут сегодня</item>
+    </plurals>
+    <plurals name="w_budget_left">
+        <item quantity="one">сегодня осталась %1$d минута</item>
+        <item quantity="few">сегодня осталось %1$d минуты</item>
+        <item quantity="many">сегодня осталось %1$d минут</item>
+        <item quantity="other">сегодня осталось %1$d минут</item>
+    </plurals>
+    <plurals name="detail_budget_left">
+        <item quantity="one">%1$s: сегодня осталась %2$d минута, затем заблокированы до полуночи</item>
+        <item quantity="few">%1$s: сегодня осталось %2$d минуты, затем заблокированы до полуночи</item>
+        <item quantity="many">%1$s: сегодня осталось %2$d минут, затем заблокированы до полуночи</item>
+        <item quantity="other">%1$s: сегодня осталось %2$d минут, затем заблокированы до полуночи</item>
+    </plurals>
+    <plurals name="detail_budget_spent">
+        <item quantity="one">%1$s: %2$d минута на сегодня израсходована, заблокированы до полуночи</item>
+        <item quantity="few">%1$s: %2$d минуты на сегодня израсходованы, заблокированы до полуночи</item>
+        <item quantity="many">%1$s: %2$d минут на сегодня израсходованы, заблокированы до полуночи</item>
+        <item quantity="other">%1$s: %2$d минут на сегодня израсходованы, заблокированы до полуночи</item>
+    </plurals>
 </resources>

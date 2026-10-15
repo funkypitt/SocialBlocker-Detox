@@ -15,6 +15,30 @@ Reference material moved out of the README.
 
 Same DNS VPN service and scheduler as the original.
 
+## Daily budget (1.8.0)
+
+An optional number of minutes a day in the apps of the chosen sites. `SitePackages`
+maps each site to its Android apps (official and the usual third-party clients;
+the manifest `<queries>` must name every one of them, a unit test checks it,
+since Android 11 hides undeclared packages from `getApplicationInfo` and from
+the usage events). `Budget` (plain Java, `BudgetTest`) sums the day's stretches
+of those apps from the usage events — an activity's RESUMED to its PAUSED or
+STOPPED, closed early by another package in front, the screen going off or a
+reboot, the union when two activities of one app overlap, clipped to the local
+calendar day — and decides: without a budget the hours decide as before (none =
+all day); with one, the sites are blocked once it is spent and, when hours are
+set, outside them too; with a budget and no hours the budget alone decides.
+`BudgetMonitor` reads the events (`PACKAGE_USAGE_STATS`, given by the user in
+the usage-access settings), stores the count in the preferences (day key +
+milliseconds) where the service's per-lookup decision reads it, and redraws the
+widget. While the VPN runs it measures again when the minutes left could be
+spent (at most every two minutes, only while the screen is on), at screen on
+and unlock, and at midnight (a main-thread `Handler`, no exact alarm, so no
+alarm permission); the app measures when it opens and the boot/update receiver
+after a start. At midnight the stored count belongs to the old day, so the
+sites open again by themselves. Browser use of a site is not counted (the DNS
+block still applies to it once the budget is spent).
+
 ## Name lookups (1.7.2)
 
 Only DNS reaches the app. A lookup for a blocked site is answered on the phone;

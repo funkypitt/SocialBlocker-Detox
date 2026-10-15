@@ -16,6 +16,9 @@ public class BlockPreferences {
     private static final String KEY_BLOCK_X = "block_x";
     private static final String KEY_BLOCK_SUBSTACK = "block_substack";
     private static final String KEY_REQUIRE_MATH = "require_math_to_unblock";
+    private static final String KEY_BUDGET = "budget_minutes";
+    private static final String KEY_BUDGET_DAY = "budget_day";
+    private static final String KEY_BUDGET_SPENT = "budget_spent_ms";
 
     private final SharedPreferences prefs;
 
@@ -105,5 +108,25 @@ public class BlockPreferences {
 
     public void setRequireMathToUnblock(boolean required) {
         prefs.edit().putBoolean(KEY_REQUIRE_MATH, required).apply();
+    }
+
+    // The daily budget: minutes a day in the apps of the chosen sites, 0 = none (default)
+
+    public int getBudgetMinutes() {
+        return prefs.getInt(KEY_BUDGET, 0);
+    }
+
+    public void setBudgetMinutes(int minutes) {
+        prefs.edit().putInt(KEY_BUDGET, Math.max(0, minutes)).apply();
+    }
+
+    /** What the last measure found: [spentMs] in front on the day [dayKey] (see Budget.dayKey). */
+    public void setBudgetSpent(int dayKey, long spentMs) {
+        prefs.edit().putInt(KEY_BUDGET_DAY, dayKey).putLong(KEY_BUDGET_SPENT, spentMs).apply();
+    }
+
+    /** The last measure of the day [dayKey]; 0 when the last measure was another day's. */
+    public long getBudgetSpentMs(int dayKey) {
+        return prefs.getInt(KEY_BUDGET_DAY, 0) == dayKey ? prefs.getLong(KEY_BUDGET_SPENT, 0L) : 0L;
     }
 }

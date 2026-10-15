@@ -12,11 +12,15 @@ public class ScheduleChecker {
      * @return true if blocking should be active (current time is NOT in an allowed range)
      */
     public static boolean shouldBlock(String schedule) {
+        return shouldBlock(schedule, Calendar.getInstance().get(Calendar.HOUR_OF_DAY));
+    }
+
+    /** The same decision at a given hour of the day (0–23). */
+    public static boolean shouldBlock(String schedule, int currentHour) {
         if (schedule == null || schedule.trim().isEmpty()) {
             return true; // No schedule = always block
         }
 
-        int currentHour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
         String[] ranges = schedule.split(",");
 
         for (String range : ranges) {

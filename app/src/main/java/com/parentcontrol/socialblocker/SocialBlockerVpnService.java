@@ -27,6 +27,7 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -203,6 +204,7 @@ public class SocialBlockerVpnService extends VpnService {
             resolverPool = Executors.newFixedThreadPool(RESOLVER_THREADS);
             refreshUpstreamServers(true);
             new Thread(this::packetLoop, "VPN-PacketLoop").start();
+            BudgetMonitor.INSTANCE.start(this);
             Log.i(TAG, "VPN started, upstream=" + upstream.order(SystemClock.elapsedRealtime()));
 
         } catch (Exception e) {
@@ -213,6 +215,7 @@ public class SocialBlockerVpnService extends VpnService {
 
     private void stopVpn() {
         running = false;
+        BudgetMonitor.INSTANCE.stop();
         if (resolverPool != null) {
             resolverPool.shutdownNow();
             resolverPool = null;
@@ -290,8 +293,7 @@ public class SocialBlockerVpnService extends VpnService {
         String domain = extractDomainName(dnsQuery);
         if (domain == null) return;
 
-        boolean shouldBlock = isDomainBlocked(domain, prefs)
-                && ScheduleChecker.shouldBlock(prefs.getSchedule());
+        boolean shouldBlock = isDomainBlocked(domain, prefs) && blockNow(prefs);
 
         byte[] dnsResponse;
         if (shouldBlock) {
@@ -311,6 +313,14 @@ public class SocialBlockerVpnService extends VpnService {
                 tunOut.flush();
             }
         }
+    }
+
+    /** The allowed hours and the daily budget, at this moment (see Budget.shouldBlock). */
+    static boolean blockNow(BlockPreferences prefs) {
+        Calendar c = Calendar.getInstance();
+        int budget = prefs.getBudgetMinutes();
+        boolean exhausted = Budget.exhausted(budget, prefs.getBudgetSpentMs(Budget.dayKey(c)));
+        return Budget.shouldBlock(prefs.getSchedule(), c.get(Calendar.HOUR_OF_DAY), budget, exhausted);
     }
 
     // ========================= Domain Matching =========================

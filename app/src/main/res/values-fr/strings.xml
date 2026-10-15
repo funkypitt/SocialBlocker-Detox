@@ -94,4 +94,41 @@
     <string name="h_sqrt">Quel nombre au carré donne %1$d ?</string>
     <string name="h_add_equations">Additionnez les deux équations.</string>
     <string name="h_mod">Calculez %1$s, puis le reste de la division par %2$d.</string>
+    <!-- le budget quotidien (1.8.0) -->
+    <string name="budget">budget quotidien</string>
+    <string name="hours_none_budget">aucune — le budget seul décide</string>
+    <string name="budget_none">pas de budget</string>
+    <string name="budget_minutes">minutes par jour dans les apps des sites choisis</string>
+    <string name="budget_hint">Les apps des sites choisis restent ouvertes jusqu\'à ce que ces minutes soient dépensées, puis les sites sont bloqués jusqu\'à minuit. Les minutes sont comptées dans les apps elles-mêmes, pas dans un navigateur. Les heures permises restent valables : en dehors, les sites sont bloqués quoi qu\'il reste. Le comptage demande l\'accès à l\'utilisation du téléphone, donné une fois dans les réglages du système.</string>
+    <string name="budget_prompt">minutes par jour (0 = pas de budget)</string>
+    <string name="budget_bad">(0–1440)</string>
+    <string name="usage_ok">accès à l\'utilisation : donné</string>
+    <string name="usage_fix">accès à l\'utilisation : nécessaire — touchez pour l\'autoriser</string>
+    <string name="usage_hint">le temps par app, compté par le téléphone</string>
+    <string name="budget_today_hint">comptées aujourd\'hui dans les apps ci-dessous</string>
+    <string name="budget_apps">les apps comptées sur ce téléphone</string>
+    <string name="budget_no_app">pas d\'app : rien n\'est compté</string>
+    <string name="detail_budget_noaccess">%1$s : le budget quotidien n\'est pas compté sans l\'accès à l\'utilisation</string>
+    <string name="w_budget_spent">budget dépensé : bloqué jusqu\'à minuit</string>
+    <string name="w_budget_noaccess">budget : accès à l\'utilisation manquant</string>
+    <plurals name="budget_value">
+        <item quantity="one">%1$d minute par jour</item>
+        <item quantity="other">%1$d minutes par jour</item>
+    </plurals>
+    <plurals name="budget_today">
+        <item quantity="one">%1$d minute aujourd\'hui</item>
+        <item quantity="other">%1$d minutes aujourd\'hui</item>
+    </plurals>
+    <plurals name="w_budget_left">
+        <item quantity="one">%1$d minute restante aujourd\'hui</item>
+        <item quantity="other">%1$d minutes restantes aujourd\'hui</item>
+    </plurals>
+    <plurals name="detail_budget_left">
+        <item quantity="one">%1$s : %2$d minute restante aujourd\'hui, puis bloqués jusqu\'à minuit</item>
+        <item quantity="other">%1$s : %2$d minutes restantes aujourd\'hui, puis bloqués jusqu\'à minuit</item>
+    </plurals>
+    <plurals name="detail_budget_spent">
+        <item quantity="one">%1$s : la minute du jour est dépensée, bloqués jusqu\'à minuit</item>
+        <item quantity="other">%1$s : les %2$d minutes du jour sont dépensées, bloqués jusqu\'à minuit</item>
+    </plurals>
 </resources>

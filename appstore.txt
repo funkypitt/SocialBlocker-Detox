@@ -10,6 +10,7 @@ It is a fork of SocialBlocker with the password gate removed. You can lift the b
 - Per-platform toggles: YouTube, Instagram, TikTok, Reddit, X (Twitter), Substack
 - Local DNS-only VPN — no upstream proxy, no account
 - Allowed hours: one or several ranges a day when the sites open (e.g. 6:00 – 8:00 and 18:00 – 22:00); blocked the rest of the day
+- Daily budget: a number of minutes a day in the apps of the chosen sites; once spent, the sites are blocked until midnight (counted with the phone's usage access, in the apps, not in a browser)
 - Optional maths challenge to unblock: solve five increasingly difficult problems
 - Auto-start on boot, foreground service so Android does not kill it
 - Compatible with Always-on VPN
@@ -35,6 +36,7 @@ C'est un fork de SocialBlocker sans la barrière par mot de passe. Vous pouvez l
 - Bascules par plateforme : YouTube, Instagram, TikTok, Reddit, X (Twitter), Substack
 - VPN local DNS uniquement — pas de proxy distant, pas de compte
 - Heures permises : une ou plusieurs plages par jour où les sites s'ouvrent (ex. 6:00 – 8:00 et 18:00 – 22:00) ; bloqués le reste de la journée
+- Budget quotidien : un nombre de minutes par jour dans les apps des sites choisis ; une fois dépensées, les sites sont bloqués jusqu'à minuit (comptées avec l'accès à l'utilisation du téléphone, dans les apps, pas dans un navigateur)
 - Défi de maths optionnel pour débloquer : cinq problèmes de difficulté croissante
 - Démarrage automatique au boot, service en avant-plan pour qu'Android ne l'arrête pas
 - Compatible avec le VPN permanent (Always-on VPN)

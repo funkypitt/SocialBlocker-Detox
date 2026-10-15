@@ -30,6 +30,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -42,6 +43,7 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.ImeAction
@@ -52,6 +54,8 @@ import androidx.compose.ui.unit.dp
 import com.parentcontrol.socialblocker.App
 import com.parentcontrol.socialblocker.BlockPreferences
 import com.parentcontrol.socialblocker.Blocker
+import com.parentcontrol.socialblocker.Budget
+import com.parentcontrol.socialblocker.BudgetMonitor
 import com.parentcontrol.socialblocker.MathProblems
 import com.parentcontrol.socialblocker.R
 import com.parentcontrol.socialblocker.data.FontChoice
@@ -65,6 +69,7 @@ import java.util.Calendar
 sealed class Screen {
     data object Home : Screen()
     data object Hours : Screen()
+    data object Budget : Screen()
     data object Challenge : Screen()
     data object Settings : Screen()
 }
@@ -129,6 +134,10 @@ fun HomeScreen(nav: Nav, app: App) {
     val requireMath = remember(v) { b.isRequireMathToUnblock }
     val ranges = remember(v) { Hours.parse(b.schedule) }
     val chosen = remember(v) { SITES.filter { it.get(b) } }
+    val budget = remember(v) { b.budgetMinutes }
+    val usageOk = remember(v) { BudgetMonitor.allowed(context) }
+    val spentMs = remember(v) { b.getBudgetSpentMs(Budget.dayKey(Calendar.getInstance())) }
+    val left = remember(v) { Budget.minutesLeft(budget, spentMs) }
 
     fun started() {
         Blocker.start(context, b)
@@ -162,9 +171,15 @@ fun HomeScreen(nav: Nav, app: App) {
                 // ---- the state, inverted while blocking ----
                 val names = chosen.joinToString(", ") { it.name }
                 val open = if (enabled && ranges.isNotEmpty()) openUntil(ranges) else null
+                // with a budget, the hours are a second condition: said after the minutes
+                val hoursPart = if (ranges.isEmpty()) "" else " · " +
+                    (if (open != null) stringResource(R.string.w_open_until, open) else stringResource(R.string.w_open_at, Hours.nextOpen(ranges, Calendar.getInstance().get(Calendar.HOUR_OF_DAY)) ?: 0))
                 val detail = when {
                     !enabled -> stringResource(R.string.detail_off)
                     chosen.isEmpty() -> stringResource(R.string.detail_nothing)
+                    budget > 0 && !usageOk -> stringResource(R.string.detail_budget_noaccess, names) + hoursPart
+                    budget > 0 && left == 0 -> pluralStringResource(R.plurals.detail_budget_spent, budget, names, budget)
+                    budget > 0 -> pluralStringResource(R.plurals.detail_budget_left, left, names, left) + hoursPart
                     open != null -> stringResource(R.string.detail_open_now, open)
                     ranges.isEmpty() -> stringResource(R.string.detail_all_day, names)
                     else -> stringResource(R.string.detail_hours, names, Hours.short(ranges))
@@ -195,8 +210,16 @@ fun HomeScreen(nav: Nav, app: App) {
                     Modifier.fillMaxWidth().noRippleClickable(enabled = !enabled) { nav.push(Screen.Hours) }
                         .padding(horizontal = rowPadH, vertical = rowPadV * 0.7f)
                 ) {
-                    T(if (ranges.isEmpty()) stringResource(R.string.hours_none) else Hours.short(ranges), size = typo.title, color = if (enabled) colors.dim else colors.fg, maxLines = 1)
+                    T(if (ranges.isNotEmpty()) Hours.short(ranges) else stringResource(if (budget > 0) R.string.hours_none_budget else R.string.hours_none), size = typo.title, color = if (enabled) colors.dim else colors.fg, maxLines = 1)
                     Small(stringResource(R.string.hours) + if (enabled) " · " + stringResource(R.string.locked) else "", maxLines = 2)
+                }
+                // the budget: a number of minutes, locked while blocking like the hours
+                Column(
+                    Modifier.fillMaxWidth().noRippleClickable { nav.push(Screen.Budget) }
+                        .padding(horizontal = rowPadH, vertical = rowPadV * 0.7f)
+                ) {
+                    T(if (budget > 0) pluralStringResource(R.plurals.budget_value, budget, budget) else stringResource(R.string.budget_none), size = typo.title, color = if (enabled) colors.dim else colors.fg, maxLines = 1)
+                    Small(stringResource(R.string.budget) + if (enabled) " · " + stringResource(R.string.locked) else "", maxLines = 2)
                 }
                 // the gate cannot be removed while blocking, or unticking it would be the way out
                 Column(
@@ -215,6 +238,7 @@ fun HomeScreen(nav: Nav, app: App) {
         if (menu) TextMenu(null, buildList {
             add(MenuItem(actionLabel) { toggle() })
             if (!enabled) add(MenuItem(stringResource(R.string.hours)) { nav.push(Screen.Hours) })
+            add(MenuItem(stringResource(R.string.budget)) { nav.push(Screen.Budget) })
         }, onDismiss = { menu = false }, footer = listOf(
             MenuItem(if (colors.isDark) stringResource(R.string.theme_light) else stringResource(R.string.theme_dark)) { app.prefs.toggleTheme(colors.isDark) },
             MenuItem(stringResource(R.string.settings)) { nav.push(Screen.Settings) }
@@ -325,6 +349,82 @@ fun HourPrompt(title: String, initial: Int?, reject: Int?, onDone: (Int) -> Unit
         onDone = { text -> val h = Hours.hourOf(text); if (h != null && h != reject) onDone(h) else bad = true },
         onCancel = onCancel
     )
+}
+
+// ---------------------------------------------------------------------------------------------
+// The daily budget: minutes a day in the apps of the chosen sites, then blocked until midnight.
+// ---------------------------------------------------------------------------------------------
+
+@Composable
+fun BudgetScreen(nav: Nav, app: App) {
+    val context = LocalContext.current
+    val typo = LocalTypo.current
+    val colors = LocalColors.current
+    val b = app.block
+    val tick = rememberTick()
+    val v = nav.version
+    val locked = remember(v) { b.isBlockingEnabled }
+    val budget = remember(v) { b.budgetMinutes }
+    var usageOk by remember { mutableStateOf(BudgetMonitor.allowed(context)) }
+    var spentMs by remember { mutableLongStateOf(0L) }
+    var ask by remember { mutableStateOf(false) }
+    val chosen = remember(v) { SITES.filter { it.get(b) } }
+    // the apps of the chosen sites that are on this phone, by site
+    val apps = remember(v) { chosen.map { it.name to BudgetMonitor.installed(context, it.name).map { p -> BudgetMonitor.label(context, p) } } }
+    // the usage access is given in the system settings: look again on coming back
+    LaunchedEffect(v) {
+        while (true) {
+            usageOk = BudgetMonitor.allowed(context)
+            spentMs = if (usageOk && budget > 0) BudgetMonitor.measure(context) else 0L
+            delay(1500)
+        }
+    }
+    BackHandler { nav.pop() }
+    Page {
+        Column(Modifier.fillMaxSize()) {
+            ScreenTitle(stringResource(R.string.budget), onBack = { nav.pop() })
+            Column(Modifier.weight(1f).verticalScroll(rememberScrollState())) {
+                Small(stringResource(R.string.budget_hint), Modifier.padding(horizontal = rowPadH).padding(top = 16.dp, bottom = 6.dp), maxLines = 12)
+                Column(
+                    Modifier.fillMaxWidth().noRippleClickable(enabled = !locked) { ask = true }
+                        .padding(horizontal = rowPadH, vertical = rowPadV * 0.7f)
+                ) {
+                    T(if (budget > 0) pluralStringResource(R.plurals.budget_value, budget, budget) else stringResource(R.string.budget_none), size = typo.title, color = if (locked) colors.dim else colors.fg, maxLines = 1)
+                    Small(stringResource(R.string.budget_minutes) + if (locked) " · " + stringResource(R.string.locked) else "", maxLines = 2)
+                }
+                TextRow(stringResource(if (usageOk) R.string.usage_ok else R.string.usage_fix), secondary = stringResource(R.string.usage_hint), size = typo.title) {
+                    tick()
+                    runCatching { context.startActivity(Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)) }
+                }
+                if (usageOk && budget > 0) {
+                    val minutes = (spentMs / 60_000L).toInt()
+                    TextRow(pluralStringResource(R.plurals.budget_today, minutes, minutes), secondary = stringResource(R.string.budget_today_hint), size = typo.title) { }
+                }
+                Rule(Modifier.padding(vertical = 8.dp))
+                Small(stringResource(R.string.budget_apps), Modifier.padding(horizontal = rowPadH).padding(top = 6.dp, bottom = 2.dp), maxLines = 2)
+                if (apps.isEmpty()) Small(stringResource(R.string.detail_nothing), Modifier.padding(horizontal = rowPadH, vertical = 10.dp))
+                apps.forEach { (site, names) ->
+                    ValueRow(site, if (names.isEmpty()) stringResource(R.string.budget_no_app) else names.joinToString(", "), strong = names.isNotEmpty(), locked = false) { }
+                }
+                VSpace(12.dp)
+            }
+            Box(Modifier.windowInsetsPadding(WindowInsets.navigationBars))
+        }
+        if (!locked && ask) {
+            var bad by remember { mutableStateOf(false) }
+            TextPrompt(
+                stringResource(R.string.budget_prompt) + if (bad) "  " + stringResource(R.string.budget_bad) else "",
+                initial = if (budget > 0) budget.toString() else "",
+                keyboard = KeyboardType.Number,
+                selectAll = true,
+                onDone = { text ->
+                    val n = text.trim().toIntOrNull()
+                    if (n != null && n in 0..1440) { b.budgetMinutes = n; nav.version++; ask = false } else bad = true
+                },
+                onCancel = { ask = false }
+            )
+        }
+    }
 }
 
 // ---------------------------------------------------------------------------------------------

@@ -12,6 +12,8 @@ import android.content.res.Configuration
 import android.graphics.Color
 import android.widget.RemoteViews
 import com.parentcontrol.socialblocker.BlockPreferences
+import com.parentcontrol.socialblocker.Budget
+import com.parentcontrol.socialblocker.BudgetMonitor
 import com.parentcontrol.socialblocker.MainActivity
 import com.parentcontrol.socialblocker.R
 import com.parentcontrol.socialblocker.data.Hours
@@ -48,8 +50,14 @@ object DetoxWidget {
         v.setTextColor(R.id.widget_sub, dim)
         v.setTextViewText(R.id.widget_title, context.getString(if (on) R.string.state_on else R.string.state_off))
         val open = Hours.openUntil(ranges, hour)
+        val budget = b.budgetMinutes
+        val left = Budget.minutesLeft(budget, b.getBudgetSpentMs(Budget.dayKey(Calendar.getInstance())))
         v.setTextViewText(R.id.widget_sub, when {
             !on -> context.getString(R.string.detail_off)
+            budget > 0 && !BudgetMonitor.allowed(context) -> context.getString(R.string.w_budget_noaccess)
+            budget > 0 && left == 0 -> context.getString(R.string.w_budget_spent)
+            budget > 0 && ranges.isNotEmpty() && open == null -> context.getString(R.string.w_open_at, Hours.nextOpen(ranges, hour) ?: 0)
+            budget > 0 -> context.resources.getQuantityString(R.plurals.w_budget_left, left, left)
             ranges.isEmpty() -> context.getString(R.string.w_all_day)
             open != null -> context.getString(R.string.w_open_until, open)
             else -> context.getString(R.string.w_open_at, Hours.nextOpen(ranges, hour) ?: 0)
@@ -73,7 +81,7 @@ object DetoxWidget {
         val b = BlockPreferences(ctx)
         val tick = PendingIntent.getBroadcast(ctx, 0, Intent(ctx, DetoxWidgetProvider::class.java).setAction(ACTION_TICK), PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
         val alarms = ctx.getSystemService(AlarmManager::class.java)
-        if (ids.isNotEmpty() && b.isBlockingEnabled && b.schedule.isNotBlank()) {
+        if (ids.isNotEmpty() && b.isBlockingEnabled && (b.schedule.isNotBlank() || b.budgetMinutes > 0)) {
             val next = Calendar.getInstance().apply { add(Calendar.HOUR_OF_DAY, 1); set(Calendar.MINUTE, 0); set(Calendar.SECOND, 5); set(Calendar.MILLISECOND, 0) }
             alarms.set(AlarmManager.RTC, next.timeInMillis, tick)   // inexact is enough for a label
         } else alarms.cancel(tick)

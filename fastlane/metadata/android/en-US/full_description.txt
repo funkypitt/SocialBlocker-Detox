@@ -7,6 +7,7 @@ It is a fork of SocialBlocker with the password gate removed. You can lift the b
 - Per-platform toggles: YouTube, Instagram, TikTok, Reddit, X (Twitter), Substack
 - Local DNS-only VPN — no upstream proxy, no account
 - Allowed hours: one or several ranges a day when the sites open (e.g. 6:00 – 8:00 and 18:00 – 22:00); blocked the rest of the day
+- Daily budget: a number of minutes a day in the apps of the chosen sites; once spent, the sites are blocked until midnight (counted with the phone's usage access, in the apps, not in a browser)
 - Optional maths challenge to unblock: solve five increasingly difficult problems
 - Auto-start on boot, foreground service so Android does not kill it
 - Compatible with Always-on VPN
