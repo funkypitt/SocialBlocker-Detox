@@ -58,6 +58,7 @@ import com.parentcontrol.socialblocker.Budget
 import com.parentcontrol.socialblocker.BudgetMonitor
 import com.parentcontrol.socialblocker.MathProblems
 import com.parentcontrol.socialblocker.R
+import com.parentcontrol.socialblocker.data.Palettes
 import com.parentcontrol.socialblocker.data.FontChoice
 import com.parentcontrol.socialblocker.data.Hours
 import com.parentcontrol.socialblocker.data.Range
@@ -185,11 +186,11 @@ fun HomeScreen(nav: Nav, app: App) {
                     else -> stringResource(R.string.detail_hours, names, Hours.short(ranges))
                 }
                 Column(
-                    Modifier.fillMaxWidth().padding(top = 14.dp).background(if (enabled) colors.fg else colors.bg)
+                    Modifier.fillMaxWidth().padding(top = 14.dp).background(if (enabled) colors.accent else colors.bg)
                         .padding(horizontal = rowPadH, vertical = 18.dp)
                 ) {
-                    T(stringResource(if (enabled) R.string.state_on else R.string.state_off), size = typo.tile * 1.3f, color = if (enabled) colors.bg else colors.fg, maxLines = 1)
-                    Small(detail, color = if (enabled) colors.bg.copy(alpha = 0.7f) else colors.dim, maxLines = 4)
+                    T(stringResource(if (enabled) R.string.state_on else R.string.state_off), size = typo.tile * 1.3f, color = if (enabled) colors.onAccent else colors.fg, maxLines = 1)
+                    Small(detail, color = if (enabled) colors.onAccent.copy(alpha = 0.7f) else colors.dim, maxLines = 4)
                 }
                 // ---- the sites ----
                 Small(
@@ -240,7 +241,7 @@ fun HomeScreen(nav: Nav, app: App) {
             if (!enabled) add(MenuItem(stringResource(R.string.hours)) { nav.push(Screen.Hours) })
             add(MenuItem(stringResource(R.string.budget)) { nav.push(Screen.Budget) })
         }, onDismiss = { menu = false }, footer = listOf(
-            MenuItem(if (colors.isDark) stringResource(R.string.theme_light) else stringResource(R.string.theme_dark)) { app.prefs.toggleTheme(colors.isDark) },
+            MenuItem(themeName(context, Palettes.next(app.prefs.settings.value.theme))) { app.prefs.nextTheme() },
             MenuItem(stringResource(R.string.settings)) { nav.push(Screen.Settings) }
         ))
         if (alwaysOn) TextMenu(
@@ -536,7 +537,7 @@ fun SettingsScreen(nav: Nav, app: App) {
                     askBatteryExemption(context)
                 }
                 Rule(Modifier.padding(vertical = 8.dp))
-                TextRow(if (colors.isDark) stringResource(R.string.theme_dark) else stringResource(R.string.theme_light), secondary = stringResource(R.string.colours)) { app.prefs.toggleTheme(colors.isDark) }
+                TextRow(themeName(context, s.theme), secondary = stringResource(R.string.colours)) { app.prefs.nextTheme() }
                 TextRow(when (s.textSize) { TextSize.SMALL -> stringResource(R.string.size_small); TextSize.MEDIUM -> stringResource(R.string.size_medium); TextSize.LARGE -> stringResource(R.string.size_large) }, secondary = stringResource(R.string.text_size)) {
                     app.prefs.setTextSize(when (s.textSize) { TextSize.SMALL -> TextSize.MEDIUM; TextSize.MEDIUM -> TextSize.LARGE; TextSize.LARGE -> TextSize.SMALL })
                 }

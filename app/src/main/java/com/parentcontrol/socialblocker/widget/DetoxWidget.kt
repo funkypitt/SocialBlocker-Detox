@@ -17,6 +17,7 @@ import com.parentcontrol.socialblocker.BudgetMonitor
 import com.parentcontrol.socialblocker.MainActivity
 import com.parentcontrol.socialblocker.R
 import com.parentcontrol.socialblocker.data.Hours
+import com.parentcontrol.socialblocker.data.Palettes
 import java.util.Calendar
 
 /**
@@ -26,13 +27,17 @@ import java.util.Calendar
 object DetoxWidget {
     private const val ACTION_TICK = "com.parentcontrol.socialblocker.widget.TICK"
 
-    /** (background, foreground, dim) following the app's theme setting. */
-    private fun colors(context: Context): Triple<Int, Int, Int> {
-        val theme = context.getSharedPreferences("settings", Context.MODE_PRIVATE).getString("theme", "DARK")
+    /** The app's theme, read from the same setting: background, text, text dimmed, accent, text on the accent. */
+    private class WidgetColors(val bg: Int, val fg: Int, val dim: Int, val accent: Int, val onAccent: Int) {
+        val isDark: Boolean get() = (0.299 * Color.red(bg) + 0.587 * Color.green(bg) + 0.114 * Color.blue(bg)) < 128
+    }
+
+    private fun colors(context: Context): WidgetColors {
+        val theme = Palettes.parse(context.getSharedPreferences("settings", Context.MODE_PRIVATE).getString("theme", null))
         val systemDark = (context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES
-        val dark = when (theme) { "LIGHT" -> false; "SYSTEM" -> systemDark; else -> true }
-        return if (dark) Triple(Color.BLACK, Color.WHITE, Color.argb(140, 255, 255, 255))
-        else Triple(Color.WHITE, Color.BLACK, Color.argb(140, 0, 0, 0))
+        val p = Palettes.of(theme, systemDark)
+        val fg = p.fg.toInt()
+        return WidgetColors(p.bg.toInt(), fg, Color.argb(140, Color.red(fg), Color.green(fg), Color.blue(fg)), p.accent.toInt(), p.onAccent.toInt())
     }
 
     private fun activity(context: Context, intent: Intent, code: Int): PendingIntent =
@@ -44,10 +49,10 @@ object DetoxWidget {
         val ranges = Hours.parse(b.schedule)
         val hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
         val v = RemoteViews(context.packageName, R.layout.widget_detox)
-        val (bg, fg, dim) = colors(context)
-        v.setInt(R.id.widget_root, "setBackgroundColor", bg)
-        v.setTextColor(R.id.widget_title, fg)
-        v.setTextColor(R.id.widget_sub, dim)
+        val c = colors(context)
+        v.setInt(R.id.widget_root, "setBackgroundColor", c.bg)
+        v.setTextColor(R.id.widget_title, c.fg)
+        v.setTextColor(R.id.widget_sub, c.dim)
         v.setTextViewText(R.id.widget_title, context.getString(if (on) R.string.state_on else R.string.state_off))
         val open = Hours.openUntil(ranges, hour)
         val budget = b.budgetMinutes
@@ -62,11 +67,12 @@ object DetoxWidget {
             open != null -> context.getString(R.string.w_open_until, open)
             else -> context.getString(R.string.w_open_at, Hours.nextOpen(ranges, hour) ?: 0)
         })
-        // the switch: filled while blocking, a hairline frame when not
+        // the switch: filled with the accent while blocking, a hairline frame when not
+        // (the frame is a drawable, white or black: the one that shows on this background)
         v.setTextViewText(R.id.widget_switch, context.getString(if (on) R.string.w_on else R.string.w_off))
-        if (on) v.setInt(R.id.widget_switch, "setBackgroundColor", fg)
-        else v.setInt(R.id.widget_switch, "setBackgroundResource", if (fg == Color.WHITE) R.drawable.widget_frame_white else R.drawable.widget_frame_black)
-        v.setTextColor(R.id.widget_switch, if (on) bg else fg)
+        if (on) v.setInt(R.id.widget_switch, "setBackgroundColor", c.accent)
+        else v.setInt(R.id.widget_switch, "setBackgroundResource", if (c.isDark) R.drawable.widget_frame_white else R.drawable.widget_frame_black)
+        v.setTextColor(R.id.widget_switch, if (on) c.onAccent else c.fg)
         v.setOnClickPendingIntent(R.id.widget_body, activity(context, Intent(context, MainActivity::class.java).setAction(Intent.ACTION_MAIN), 1))
         v.setOnClickPendingIntent(R.id.widget_switch, activity(context, Intent(context, WidgetActivity::class.java), 2))
         mgr.updateAppWidget(id, v)
