@@ -12,6 +12,9 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -50,6 +53,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.parentcontrol.socialblocker.App
 import com.parentcontrol.socialblocker.BlockPreferences
@@ -115,6 +119,22 @@ fun askBatteryExemption(context: Context) {
     if (!batteryExempt(context)) runCatching {
         context.startActivity(Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS).setData(Uri.parse("package:${context.packageName}")))
     }
+}
+
+/**
+ * A hand-made tappable row (not a TextRow): in the inks a bare line of text; with a colour theme
+ * a card in the tile colour, the press colour under the finger, the text keeping the page's inset.
+ */
+@Composable
+fun Modifier.tapRow(enabled: Boolean = true, vertical: Dp = rowPadV * 0.7f, onClick: () -> Unit): Modifier {
+    val colors = LocalColors.current
+    val interaction = remember { MutableInteractionSource() }
+    val pressed by interaction.collectIsPressedAsState()
+    return this
+        .fillMaxWidth()
+        .tileCard(if (pressed && enabled) colors.press else colors.tile)
+        .clickable(interactionSource = interaction, indication = null, enabled = enabled, onClick = onClick)
+        .padding(horizontal = if (colors.tiles) rowPadH - tileGap else rowPadH, vertical = vertical)
 }
 
 // ---------------------------------------------------------------------------------------------
@@ -186,8 +206,9 @@ fun HomeScreen(nav: Nav, app: App) {
                     else -> stringResource(R.string.detail_hours, names, Hours.short(ranges))
                 }
                 Column(
-                    Modifier.fillMaxWidth().padding(top = 14.dp).background(if (enabled) colors.accent else colors.bg)
-                        .padding(horizontal = rowPadH, vertical = 18.dp)
+                    Modifier.fillMaxWidth().padding(top = 14.dp)
+                        .then(if (colors.tiles) Modifier.tileCard(if (enabled) colors.accent else colors.tile) else Modifier.background(if (enabled) colors.accent else colors.bg))
+                        .padding(horizontal = if (colors.tiles) rowPadH - tileGap else rowPadH, vertical = 18.dp)
                 ) {
                     T(stringResource(if (enabled) R.string.state_on else R.string.state_off), size = typo.tile * 1.3f, color = if (enabled) colors.onAccent else colors.fg, maxLines = 1)
                     Small(detail, color = if (enabled) colors.onAccent.copy(alpha = 0.7f) else colors.dim, maxLines = 4)
@@ -207,26 +228,17 @@ fun HomeScreen(nav: Nav, app: App) {
                 Rule(Modifier.padding(vertical = 8.dp))
                 // ---- when, and what stopping costs ----
                 // while blocking the hours cannot be widened either
-                Column(
-                    Modifier.fillMaxWidth().noRippleClickable(enabled = !enabled) { nav.push(Screen.Hours) }
-                        .padding(horizontal = rowPadH, vertical = rowPadV * 0.7f)
-                ) {
+                Column(Modifier.tapRow(enabled = !enabled) { nav.push(Screen.Hours) }) {
                     T(if (ranges.isNotEmpty()) Hours.short(ranges) else stringResource(if (budget > 0) R.string.hours_none_budget else R.string.hours_none), size = typo.title, color = if (enabled) colors.dim else colors.fg, maxLines = 1)
                     Small(stringResource(R.string.hours) + if (enabled) " · " + stringResource(R.string.locked) else "", maxLines = 2)
                 }
                 // the budget: a number of minutes, locked while blocking like the hours
-                Column(
-                    Modifier.fillMaxWidth().noRippleClickable { nav.push(Screen.Budget) }
-                        .padding(horizontal = rowPadH, vertical = rowPadV * 0.7f)
-                ) {
+                Column(Modifier.tapRow { nav.push(Screen.Budget) }) {
                     T(if (budget > 0) pluralStringResource(R.plurals.budget_value, budget, budget) else stringResource(R.string.budget_none), size = typo.title, color = if (enabled) colors.dim else colors.fg, maxLines = 1)
                     Small(stringResource(R.string.budget) + if (enabled) " · " + stringResource(R.string.locked) else "", maxLines = 2)
                 }
                 // the gate cannot be removed while blocking, or unticking it would be the way out
-                Column(
-                    Modifier.fillMaxWidth().noRippleClickable(enabled = !enabled) { tick(); b.setRequireMathToUnblock(!requireMath); nav.version++ }
-                        .padding(horizontal = rowPadH, vertical = rowPadV * 0.7f)
-                ) {
+                Column(Modifier.tapRow(enabled = !enabled) { tick(); b.setRequireMathToUnblock(!requireMath); nav.version++ }) {
                     T(stringResource(if (requireMath) R.string.on else R.string.off), size = typo.title, color = if (enabled) colors.dim else colors.fg, maxLines = 1)
                     Small(stringResource(R.string.math_label) + if (enabled) " · " + stringResource(R.string.locked) else "", maxLines = 2)
                 }
@@ -260,8 +272,7 @@ fun ValueRow(label: String, value: String, strong: Boolean, locked: Boolean, onC
     val colors = LocalColors.current
     val typo = LocalTypo.current
     Row(
-        Modifier.fillMaxWidth().noRippleClickable(enabled = !locked, onClick = onClick)
-            .padding(horizontal = rowPadH, vertical = rowPadV * 0.45f),
+        Modifier.tapRow(enabled = !locked, vertical = rowPadV * 0.45f, onClick = onClick),
         verticalAlignment = Alignment.CenterVertically
     ) {
         T(label, Modifier.weight(1f), size = typo.title, color = if (locked) colors.dim else colors.fg, maxLines = 1, align = TextAlign.Start)
@@ -302,10 +313,7 @@ fun HoursScreen(nav: Nav, app: App) {
             Column(Modifier.weight(1f).verticalScroll(rememberScrollState())) {
                 Small(stringResource(R.string.hours_hint), Modifier.padding(horizontal = rowPadH).padding(top = 16.dp, bottom = 6.dp), maxLines = 6)
                 ranges.forEachIndexed { i, r ->
-                    Column(
-                        Modifier.fillMaxWidth().noRippleClickable(enabled = !locked) { picked = i }
-                            .padding(horizontal = rowPadH, vertical = rowPadV * 0.7f)
-                    ) {
+                    Column(Modifier.tapRow(enabled = !locked) { picked = i }) {
                         T(r.label, color = if (locked) colors.dim else colors.fg, maxLines = 1)
                         if (r.start > r.end) Small(stringResource(R.string.overnight), maxLines = 1)
                     }
@@ -386,10 +394,7 @@ fun BudgetScreen(nav: Nav, app: App) {
             ScreenTitle(stringResource(R.string.budget), onBack = { nav.pop() })
             Column(Modifier.weight(1f).verticalScroll(rememberScrollState())) {
                 Small(stringResource(R.string.budget_hint), Modifier.padding(horizontal = rowPadH).padding(top = 16.dp, bottom = 6.dp), maxLines = 12)
-                Column(
-                    Modifier.fillMaxWidth().noRippleClickable(enabled = !locked) { ask = true }
-                        .padding(horizontal = rowPadH, vertical = rowPadV * 0.7f)
-                ) {
+                Column(Modifier.tapRow(enabled = !locked) { ask = true }) {
                     T(if (budget > 0) pluralStringResource(R.plurals.budget_value, budget, budget) else stringResource(R.string.budget_none), size = typo.title, color = if (locked) colors.dim else colors.fg, maxLines = 1)
                     Small(stringResource(R.string.budget_minutes) + if (locked) " · " + stringResource(R.string.locked) else "", maxLines = 2)
                 }
@@ -485,7 +490,10 @@ fun ChallengeScreen(nav: Nav, app: App) {
                 )
                 Progress((level + if (busy) 1 else 0) / MathProblems.TOTAL_LEVELS.toFloat(), Modifier.padding(horizontal = rowPadH))
                 T(problem.question, Modifier.padding(horizontal = rowPadH).padding(top = 22.dp, bottom = 14.dp), align = TextAlign.Start)
-                Row(Modifier.fillMaxWidth().padding(horizontal = rowPadH), verticalAlignment = Alignment.CenterVertically) {
+                Row(
+                    Modifier.fillMaxWidth().tileCard().padding(horizontal = if (colors.tiles) rowPadH - tileGap else rowPadH),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
                     ReaderTextField(
                         value = answer,
                         onValueChange = { if (!busy) answer = it },
@@ -502,7 +510,7 @@ fun ChallengeScreen(nav: Nav, app: App) {
                         answer = TextFieldValue(flipped, TextRange(flipped.length))
                     }.padding(start = 16.dp, top = 6.dp, bottom = 6.dp), color = colors.dim, align = TextAlign.End)
                 }
-                Rule(color = colors.fg, modifier = Modifier.padding(horizontal = rowPadH))
+                if (!colors.tiles) Rule(color = colors.fg, modifier = Modifier.padding(horizontal = rowPadH))
                 if (feedback.isNotEmpty()) Small(feedback, Modifier.padding(horizontal = rowPadH).padding(top = 12.dp), color = if (busy) colors.fg else colors.dim, maxLines = 2)
                 if (wrong >= 2 && !busy) Small(stringResource(R.string.hint, problem.hint), Modifier.padding(horizontal = rowPadH).padding(top = 8.dp), maxLines = 4)
                 VSpace(12.dp)

@@ -12,8 +12,8 @@ android {
         applicationId = "com.parentcontrol.socialblocker.detox"
         minSdk = 24
         targetSdk = 34
-        versionCode = 13
-        versionName = "1.9.0-detox"
+        versionCode = 14
+        versionName = "1.10.0-detox"
     }
 
     buildTypes { release { isMinifyEnabled = false } }
