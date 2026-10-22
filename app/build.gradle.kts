@@ -12,8 +12,29 @@ android {
         applicationId = "com.parentcontrol.socialblocker.detox"
         minSdk = 24
         targetSdk = 34
-        versionCode = 14
-        versionName = "1.10.0-detox"
+        versionCode = 15
+        versionName = "1.11.0-detox"
+    }
+
+    flavorDimensions += "audience"
+    productFlavors {
+        // The family build is the one for a child's phone: a parent PIN on the whole app and
+        // the section quotas (WhatsApp's Updates, CapCut's templates) kept by an accessibility
+        // service. The public build carries neither the service nor the PIN: Reader's Detox
+        // stays a detox you impose on yourself. Same application id and key, so the family
+        // build installs over the public one; its version code is lifted well above the public
+        // one so F-Droid, which only ever offers something newer, never puts the public build back.
+        create("famille") {
+            dimension = "audience"
+            isDefault = true
+            buildConfigField("boolean", "FAMILLE", "true")
+            versionCode = 1000 + (android.defaultConfig.versionCode ?: 1)
+            versionNameSuffix = "-famille"
+        }
+        create("publique") {
+            dimension = "audience"
+            buildConfigField("boolean", "FAMILLE", "false")
+        }
     }
 
     buildTypes { release { isMinifyEnabled = false } }
@@ -33,4 +54,6 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0")
     debugImplementation("androidx.compose.ui:ui-tooling")
     testImplementation("junit:junit:4.13.2")
+    // the rules JSON is parsed with the platform's org.json; the JVM tests need the real one
+    testImplementation("org.json:json:20240303")
 }

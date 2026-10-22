@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The family build only: the guard of the sections, and the apps it may look at. -->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <queries>
+        <package android:name="com.whatsapp" />
+        <package android:name="com.whatsapp.w4b" />
+        <package android:name="com.lemon.lvoverseas" />
+        <package android:name="com.lemon.lv" />
+    </queries>
+
+    <application>
+        <service
+            android:name=".sections.SectionGuardService"
+            android:exported="false"
+            android:label="@string/sec_service_label"
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
+            <intent-filter>
+                <action android:name="android.accessibilityservice.AccessibilityService" />
+            </intent-filter>
+            <meta-data
+                android:name="android.accessibilityservice"
+                android:resource="@xml/section_guard" />
+        </service>
+
+        <!-- the exports (rules, discovery captures) handed to the share menu -->
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.exports"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data android:name="android.support.FILE_PROVIDER_PATHS" android:resource="@xml/export_paths" />
+        </provider>
+    </application>
+</manifest>

@@ -285,6 +285,7 @@ fun TextPrompt(
     keyboard: androidx.compose.ui.text.input.KeyboardType = androidx.compose.ui.text.input.KeyboardType.Text,
     selectAll: Boolean = false,
     normalize: ((String) -> String)? = null,
+    password: Boolean = false,
     onDone: (String) -> Unit,
     onCancel: () -> Unit
 ) {
@@ -323,7 +324,8 @@ fun TextPrompt(
                 modifier = Modifier.fillMaxWidth().padding(horizontal = rowPadH, vertical = 10.dp).focusRequester(focus),
                 imeAction = ImeAction.Done,
                 onImeAction = { if (value.isNotBlank()) onDone(value.trim()) },
-                keyboard = keyboard
+                keyboard = keyboard,
+                password = password
             )
             Rule()
             Row(Modifier.fillMaxWidth()) {
@@ -359,7 +361,8 @@ fun ReaderTextField(
         singleLine = true,
         textStyle = TextStyle(color = colors.fg, fontFamily = typo.family, fontWeight = typo.weight, fontSize = typo.tile),
         cursorBrush = SolidColor(colors.fg),
-        keyboardOptions = KeyboardOptions(imeAction = imeAction, keyboardType = if (password) androidx.compose.ui.text.input.KeyboardType.Password else keyboard),
+        // a password field keeps a number keyboard when asked for one (the PIN)
+        keyboardOptions = KeyboardOptions(imeAction = imeAction, keyboardType = if (password && keyboard == androidx.compose.ui.text.input.KeyboardType.Text) androidx.compose.ui.text.input.KeyboardType.Password else keyboard),
         visualTransformation = if (password) androidx.compose.ui.text.input.PasswordVisualTransformation() else androidx.compose.ui.text.input.VisualTransformation.None,
         keyboardActions = KeyboardActions(onAny = { onImeAction() }),
         decorationBox = { inner ->

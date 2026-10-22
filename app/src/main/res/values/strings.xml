@@ -140,4 +140,73 @@
         <item quantity="one">%1$s: today\'s minute is spent, blocked until midnight</item>
         <item quantity="other">%1$s: today\'s %2$d minutes are spent, blocked until midnight</item>
     </plurals>
+    <!-- the sections with a quota and the parent PIN (family build, 1.11.0) -->
+    <string name="sections">sections with a quota</string>
+    <string name="sections_none">no section quota</string>
+    <plurals name="sections_count">
+        <item quantity="one">%1$d section with a quota</item>
+        <item quantity="other">%1$d sections with a quota</item>
+    </plurals>
+    <string name="sec_hint">Minutes a day on one part of an app — WhatsApp\'s Updates and channels, CapCut\'s templates — while the rest of the app stays open. Counted only while that part is on the screen and the screen is on; at midnight the count starts again. Needs the accessibility service below.</string>
+    <string name="sec_service_label">Reader\'s Detox — sections</string>
+    <string name="sec_service_desc">Sees which part of WhatsApp or CapCut is on the screen, to count the minutes a parent allowed on it and leave it once they are spent. Reads no message and keeps nothing of the screens.</string>
+    <string name="sec_service_on">accessibility service: running</string>
+    <string name="sec_service_off">accessibility service: off</string>
+    <string name="sec_service_hint">tap to switch it on in the settings. It lets the app see which part of WhatsApp or CapCut is on the screen; no message is read.</string>
+    <string name="sec_service_off_since">accessibility service: off since %1$s</string>
+    <string name="sec_weekday">minutes a day, Monday to Friday</string>
+    <string name="sec_weekend">minutes a day, Saturday and Sunday</string>
+    <string name="sec_minutes_prompt">minutes a day (0 = closed all day)</string>
+    <plurals name="sec_minutes_value">
+        <item quantity="one">%1$d minute</item>
+        <item quantity="other">%1$d minutes</item>
+    </plurals>
+    <plurals name="sec_today">
+        <item quantity="one">%1$d minute today</item>
+        <item quantity="other">%1$d minutes today</item>
+    </plurals>
+    <string name="sec_today_hint">counted today</string>
+    <string name="sec_warn">a warning five minutes before the end</string>
+    <string name="sec_rules">rules v%1$d · %2$s</string>
+    <string name="sec_rules_bundled">built in</string>
+    <string name="sec_rules_custom">imported</string>
+    <string name="sec_rules_hint">which screens count as each section; a file to replace when WhatsApp or CapCut change</string>
+    <string name="sec_import">import a rules file…</string>
+    <string name="sec_export">export the rules…</string>
+    <string name="sec_reset">back to the built-in rules</string>
+    <string name="sec_import_bad">this file is not a rules file; the rules in use stay</string>
+    <string name="sec_import_ok">rules imported: version %1$d</string>
+    <string name="sec_discovery_on">discovery: on until %1$s</string>
+    <string name="sec_discovery_off">discovery: off</string>
+    <string name="sec_discovery_hint">tap for ten minutes (tap again to stop). The structure of every WhatsApp or CapCut screen is then written to a file, to find the markers of a section. Do it on screens with no private conversation.</string>
+    <plurals name="sec_dumps">
+        <item quantity="one">%1$d screen captured</item>
+        <item quantity="other">%1$d screens captured</item>
+    </plurals>
+    <string name="sec_dumps_none">no capture yet</string>
+    <string name="sec_dumps_export">export the captures…</string>
+    <string name="sec_dumps_clear">delete the captures</string>
+    <string name="export_saved">saved as %1$s</string>
+    <string name="share_export">share this file…</string>
+    <string name="pin_title">parent PIN</string>
+    <string name="pin_enter">enter the parent PIN</string>
+    <string name="pin_wrong">wrong PIN</string>
+    <string name="pin_set">set a parent PIN</string>
+    <string name="pin_set_hint">then the whole app opens on it: stopping, sites, hours, budget, sections</string>
+    <string name="pin_protected">parent PIN: set</string>
+    <string name="pin_new">new PIN (4 to 8 digits)</string>
+    <string name="pin_confirm">the same PIN again</string>
+    <string name="pin_mismatch">the two PINs differ</string>
+    <string name="pin_change">change the PIN</string>
+    <string name="pin_remove">remove the PIN</string>
+    <string name="pin_current">current PIN</string>
+    <string name="sec_family_link">On the child\'s phone, lock the accessibility settings and the uninstalling of apps with Family Link or another device manager; otherwise the child can switch the service off.</string>
+    <string name="sec_quota_reached">%1$s: quota reached for today</string>
+    <plurals name="sec_minutes_left">
+        <item quantity="one">%1$s: %2$d minute left today</item>
+        <item quantity="other">%1$s: %2$d minutes left today</item>
+    </plurals>
+    <string name="sec_channel">sections</string>
+    <string name="sec_off_title">section quotas not kept</string>
+    <string name="sec_off_text">The accessibility service of Reader\'s Detox is off. Switch it on again in the accessibility settings.</string>
 </resources>

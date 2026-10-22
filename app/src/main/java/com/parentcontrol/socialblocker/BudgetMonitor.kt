@@ -122,6 +122,7 @@ object BudgetMonitor {
     private fun schedule() {
         val c = ctx ?: return
         handler.removeCallbacks(tick)
+        com.parentcontrol.socialblocker.sections.SectionGuardService.checkOff(c)
         val spent = measure(c)
         val prefs = BlockPreferences(c)
         val now = System.currentTimeMillis()

@@ -56,6 +56,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.parentcontrol.socialblocker.App
+import com.parentcontrol.socialblocker.BuildConfig
+import com.parentcontrol.socialblocker.sections.RulesRepo
+import com.parentcontrol.socialblocker.sections.SectionGuardService
 import com.parentcontrol.socialblocker.BlockPreferences
 import com.parentcontrol.socialblocker.Blocker
 import com.parentcontrol.socialblocker.Budget
@@ -77,6 +80,8 @@ sealed class Screen {
     data object Budget : Screen()
     data object Challenge : Screen()
     data object Settings : Screen()
+    /** The family build: the sections with a quota, behind the parent PIN like the rest. */
+    data object Sections : Screen()
 }
 
 class Nav {
@@ -242,6 +247,14 @@ fun HomeScreen(nav: Nav, app: App) {
                     T(stringResource(if (requireMath) R.string.on else R.string.off), size = typo.title, color = if (enabled) colors.dim else colors.fg, maxLines = 1)
                     Small(stringResource(R.string.math_label) + if (enabled) " · " + stringResource(R.string.locked) else "", maxLines = 2)
                 }
+                // the family build: the sections with a quota (WhatsApp's Updates, CapCut's templates)
+                if (BuildConfig.FAMILLE) {
+                    val quotas = remember(v) { RulesRepo.rules(context).sections.count { app.sections.quota(it.key).enabled } }
+                    Column(Modifier.tapRow { nav.push(Screen.Sections) }) {
+                        T(if (quotas > 0) pluralStringResource(R.plurals.sections_count, quotas, quotas) else stringResource(R.string.sections_none), size = typo.title, maxLines = 1)
+                        Small(stringResource(R.string.sections) + if (BuildConfig.FAMILLE && !SectionGuardService.isEnabled(context) && quotas > 0) " · " + stringResource(R.string.off) else "", maxLines = 2)
+                    }
+                }
                 VSpace(12.dp)
             }
             Rule()
@@ -252,6 +265,7 @@ fun HomeScreen(nav: Nav, app: App) {
             add(MenuItem(actionLabel) { toggle() })
             if (!enabled) add(MenuItem(stringResource(R.string.hours)) { nav.push(Screen.Hours) })
             add(MenuItem(stringResource(R.string.budget)) { nav.push(Screen.Budget) })
+            if (BuildConfig.FAMILLE) add(MenuItem(stringResource(R.string.sections)) { nav.push(Screen.Sections) })
         }, onDismiss = { menu = false }, footer = listOf(
             MenuItem(themeName(context, Palettes.next(app.prefs.settings.value.theme))) { app.prefs.nextTheme() },
             MenuItem(stringResource(R.string.settings)) { nav.push(Screen.Settings) }

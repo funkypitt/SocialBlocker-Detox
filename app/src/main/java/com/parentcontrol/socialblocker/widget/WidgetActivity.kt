@@ -6,6 +6,8 @@ import android.net.VpnService
 import android.os.Bundle
 import com.parentcontrol.socialblocker.BlockPreferences
 import com.parentcontrol.socialblocker.Blocker
+import com.parentcontrol.socialblocker.BuildConfig
+import com.parentcontrol.socialblocker.sections.SectionPrefs
 import com.parentcontrol.socialblocker.MainActivity
 
 /**
@@ -20,6 +22,9 @@ class WidgetActivity : Activity() {
         if (!b.isBlockingEnabled) {
             if (VpnService.prepare(this) == null) Blocker.start(this, b)
             else openApp(MainActivity.ACTION_START)
+        } else if (BuildConfig.FAMILLE && SectionPrefs(this).pinSet) {
+            // the family build with a PIN: stopping is the parent's, in the app
+            openApp(MainActivity.ACTION_CHALLENGE)
         } else {
             Blocker.stopOrChallenge(this, b) { openApp(MainActivity.ACTION_CHALLENGE) }
         }

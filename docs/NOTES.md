@@ -15,6 +15,56 @@ Reference material moved out of the README.
 
 Same DNS VPN service and scheduler as the original.
 
+## Section quotas and parent PIN — family build (1.11.0)
+
+Two Gradle flavours since 1.11.0: `publique` (the F-Droid app, unchanged in substance) and
+`famille` (version code 1000 + public, `-famille` suffix, same id and key), for a child's
+phone. The `famille` manifest alone declares `sections.SectionGuardService`, an
+`AccessibilityService` (`res/xml/section_guard.xml`: window state, window content, view
+selected; `flagReportViewIds`, `canRetrieveWindowContent`, 300 ms notification timeout), the
+`<queries>` for WhatsApp and CapCut, and the FileProvider of the exports. `BuildConfig.FAMILLE`
+gates the *sections* row and the PIN in the UI.
+
+`sections/` holds the logic, pure and tested (`SectionTimerTest`, `RulesTest`, `QuotaTest`,
+`PinTest`, 33 tests):
+
+- `Rules` parses the JSON (bundled `assets/section_rules.json`, or `files/section_rules.json`
+  imported by the parent; `RulesRepo` chooses and reloads). A section is in front when one
+  `any` selector holds and no `none` does; selectors AND their keys on one node (id, class,
+  text, desc per language, selected, clickable) plus `activity` on the window; `*` globs, case
+  ignored. `escape` names the nodes to tap to leave. Format and update procedure: RULES.md.
+- `SectionTimer` is the stopwatch: `observe(sectionOrNull, now)` on every look. Entry counts
+  from the first observation; leaving (or switching) is confirmed only once the new state has
+  held for 1 s (anti-flicker) and then counts up to the moment the section was first seen
+  gone; `screenOff` closes at once; a stretch across midnight is split by day; `onCommit`
+  reports each closed stretch for persistence; `seed` restores the day's totals at start.
+- `Quota` (week / weekend minutes, 0 = closed, warning in the last five minutes), `ActionGuard`
+  (three actions per ten seconds, then thirty seconds of message only), `Pin` (salted SHA-256).
+
+`SectionGuardService` restricts its `packageNames` at run time to the rules' packages (so a
+rules file can add an app), throttles content-changed events to 400 ms, walks the window
+(≤ 400 nodes, depth ≤ 30) into a `Snapshot`, asks the rules, feeds the timer. Because a
+restricted service hears nothing when the child leaves for another app, it also looks once a
+second while a section runs; that tick is also what spends a quota on a still screen. The day's
+total is written every 30 s and at each close (`SectionPrefs`, SharedPreferences `sections`,
+keys by day so another day's figure is never read). Quota spent: toast, escape tap (nearest
+clickable ancestor) or GLOBAL_ACTION_BACK, under the guard. Service off: `onUnbind` notifies
+the parent; a force-stop gives no `onUnbind`, so `checkOff` runs at app open, after a boot and
+from the budget's clock. Discovery mode (parent, ten minutes) writes one text file per screen
+under `files/discovery/` (texts cut at 40 characters, 220 lines, 60 files kept, identical bursts
+skipped); the parent exports them as `readers-detox-discovery.txt`, saved then shared.
+
+The PIN: `MainActivity` shows `PinScreen` instead of everything while a PIN is set and the
+activity was away more than a minute (the VPN consent and the file pickers stop it for
+seconds, not a relock). The widget's off tap opens the app instead of stopping.
+
+Seen on the emulator (API 36, Settings app as the watched package through an imported rules
+file): quota 0 → pushed out of *Network & internet* in under half a second; quota 1 minute over
+two stretches → left at 61 s, total stored; discovery dumps readable; PIN set, asked at the
+next open, wrong PIN refused; force-stop → notification *section quotas not kept*. Not seen:
+WhatsApp and CapCut themselves (the bundled rules are drafts to confirm with discovery), the
+midnight rollover on a device, Family Link.
+
 ## Daily budget (1.8.0)
 
 An optional number of minutes a day in the apps of the chosen sites. `SitePackages`

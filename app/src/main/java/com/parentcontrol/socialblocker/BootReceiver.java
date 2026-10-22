@@ -25,6 +25,7 @@ public class BootReceiver extends BroadcastReceiver {
                 }
             }
             BudgetMonitor.INSTANCE.measure(context);
+            com.parentcontrol.socialblocker.sections.SectionGuardService.Companion.checkOff(context);
             DetoxWidget.INSTANCE.refresh(context);
         }
     }

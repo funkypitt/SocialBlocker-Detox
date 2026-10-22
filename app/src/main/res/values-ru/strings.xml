@@ -150,4 +150,83 @@
         <item quantity="many">%1$s: %2$d минут на сегодня израсходованы, заблокированы до полуночи</item>
         <item quantity="other">%1$s: %2$d минут на сегодня израсходованы, заблокированы до полуночи</item>
     </plurals>
+    <!-- разделы с лимитом и родительский PIN (семейная версия, 1.11.0) -->
+    <string name="sections">разделы с лимитом</string>
+    <string name="sections_none">лимитов на разделы нет</string>
+    <plurals name="sections_count">
+        <item quantity="one">%1$d раздел с лимитом</item>
+        <item quantity="few">%1$d раздела с лимитом</item>
+        <item quantity="many">%1$d разделов с лимитом</item>
+        <item quantity="other">%1$d раздела с лимитом</item>
+    </plurals>
+    <string name="sec_hint">Минуты в день на часть приложения — «Обновления» и каналы в WhatsApp, шаблоны в CapCut — пока остальное приложение остаётся открытым. Считаются только пока эта часть на экране и экран включён; в полночь счёт начинается заново. Нужна служба специальных возможностей ниже.</string>
+    <string name="sec_service_label">Reader\'s Detox — разделы</string>
+    <string name="sec_service_desc">Видит, какая часть WhatsApp или CapCut на экране, чтобы считать разрешённые родителем минуты и выходить из неё, когда они израсходованы. Не читает сообщений и ничего с экранов не хранит.</string>
+    <string name="sec_service_on">служба специальных возможностей: работает</string>
+    <string name="sec_service_off">служба специальных возможностей: выключена</string>
+    <string name="sec_service_hint">нажмите, чтобы включить её в настройках. Она позволяет приложению видеть, какая часть WhatsApp или CapCut на экране; сообщения не читаются.</string>
+    <string name="sec_service_off_since">служба специальных возможностей: выключена с %1$s</string>
+    <string name="sec_weekday">минут в день, с понедельника по пятницу</string>
+    <string name="sec_weekend">минут в день, в субботу и воскресенье</string>
+    <string name="sec_minutes_prompt">минут в день (0 = закрыто весь день)</string>
+    <plurals name="sec_minutes_value">
+        <item quantity="one">%1$d минута</item>
+        <item quantity="few">%1$d минуты</item>
+        <item quantity="many">%1$d минут</item>
+        <item quantity="other">%1$d минуты</item>
+    </plurals>
+    <plurals name="sec_today">
+        <item quantity="one">%1$d минута сегодня</item>
+        <item quantity="few">%1$d минуты сегодня</item>
+        <item quantity="many">%1$d минут сегодня</item>
+        <item quantity="other">%1$d минуты сегодня</item>
+    </plurals>
+    <string name="sec_today_hint">насчитано сегодня</string>
+    <string name="sec_warn">предупреждение за пять минут до конца</string>
+    <string name="sec_rules">правила v%1$d · %2$s</string>
+    <string name="sec_rules_bundled">встроенные</string>
+    <string name="sec_rules_custom">импортированные</string>
+    <string name="sec_rules_hint">какие экраны считаются каким разделом; файл, который заменяют, когда WhatsApp или CapCut меняются</string>
+    <string name="sec_import">импортировать файл правил…</string>
+    <string name="sec_export">экспортировать правила…</string>
+    <string name="sec_reset">вернуться к встроенным правилам</string>
+    <string name="sec_import_bad">это не файл правил; действующие правила остаются</string>
+    <string name="sec_import_ok">правила импортированы: версия %1$d</string>
+    <string name="sec_discovery_on">разведка: идёт до %1$s</string>
+    <string name="sec_discovery_off">разведка: выключена</string>
+    <string name="sec_discovery_hint">нажмите для десяти минут (нажмите ещё раз, чтобы остановить). Структура каждого экрана WhatsApp или CapCut записывается в файл, чтобы найти признаки раздела. Делайте это на экранах без личных переписок.</string>
+    <plurals name="sec_dumps">
+        <item quantity="one">%1$d экран записан</item>
+        <item quantity="few">%1$d экрана записано</item>
+        <item quantity="many">%1$d экранов записано</item>
+        <item quantity="other">%1$d экрана записано</item>
+    </plurals>
+    <string name="sec_dumps_none">записей пока нет</string>
+    <string name="sec_dumps_export">экспортировать записи…</string>
+    <string name="sec_dumps_clear">удалить записи</string>
+    <string name="export_saved">сохранено как %1$s</string>
+    <string name="share_export">поделиться этим файлом…</string>
+    <string name="pin_title">родительский PIN</string>
+    <string name="pin_enter">введите родительский PIN</string>
+    <string name="pin_wrong">неверный PIN</string>
+    <string name="pin_set">задать родительский PIN</string>
+    <string name="pin_set_hint">после этого всё приложение открывается через него: остановка, сайты, часы, бюджет, разделы</string>
+    <string name="pin_protected">родительский PIN: задан</string>
+    <string name="pin_new">новый PIN (от 4 до 8 цифр)</string>
+    <string name="pin_confirm">тот же PIN ещё раз</string>
+    <string name="pin_mismatch">PIN не совпадают</string>
+    <string name="pin_change">изменить PIN</string>
+    <string name="pin_remove">убрать PIN</string>
+    <string name="pin_current">текущий PIN</string>
+    <string name="sec_family_link">На телефоне ребёнка заблокируйте настройки специальных возможностей и удаление приложений через Family Link или другой менеджер устройства; иначе ребёнок сможет выключить службу.</string>
+    <string name="sec_quota_reached">%1$s: лимит на сегодня исчерпан</string>
+    <plurals name="sec_minutes_left">
+        <item quantity="one">%1$s: сегодня осталась %2$d минута</item>
+        <item quantity="few">%1$s: сегодня осталось %2$d минуты</item>
+        <item quantity="many">%1$s: сегодня осталось %2$d минут</item>
+        <item quantity="other">%1$s: сегодня осталось %2$d минуты</item>
+    </plurals>
+    <string name="sec_channel">разделы</string>
+    <string name="sec_off_title">лимиты разделов не соблюдаются</string>
+    <string name="sec_off_text">Служба специальных возможностей Reader\'s Detox выключена. Включите её снова в настройках специальных возможностей.</string>
 </resources>

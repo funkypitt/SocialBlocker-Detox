@@ -26,6 +26,10 @@ import com.parentcontrol.socialblocker.ui.Nav
 import com.parentcontrol.socialblocker.ui.ReaderTheme
 import com.parentcontrol.socialblocker.ui.Screen
 import com.parentcontrol.socialblocker.ui.SettingsScreen
+import com.parentcontrol.socialblocker.ui.PinScreen
+import com.parentcontrol.socialblocker.ui.SectionsScreen
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import com.parentcontrol.socialblocker.widget.DetoxWidget
 
 class MainActivity : ComponentActivity() {
@@ -35,6 +39,10 @@ class MainActivity : ComponentActivity() {
     }
 
     private val nav = Nav()
+    /** Family build: false until the parent's PIN is typed; locked again after a while away. */
+    private var unlocked by mutableStateOf(false)
+    private var stoppedAt = 0L
+    private val relockAfterMs = 60_000L
     private val askNotif = registerForActivityResult(ActivityResultContracts.RequestPermission()) { }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -52,7 +60,9 @@ class MainActivity : ComponentActivity() {
             val settings by app.prefs.settings.collectAsState()
             ReaderTheme(settings) {
                 Bars()
-                when (nav.current) {
+                if (BuildConfig.FAMILLE && app.sections.pinSet && !unlocked) PinScreen(app.sections) { unlocked = true }
+                else when (nav.current) {
+                    Screen.Sections -> SectionsScreen(nav, app)
                     Screen.Home -> HomeScreen(nav, app)
                     Screen.Hours -> HoursScreen(nav, app)
                     Screen.Budget -> BudgetScreen(nav, app)
@@ -77,6 +87,17 @@ class MainActivity : ComponentActivity() {
         nav.version++
     }
 
+    override fun onStop() {
+        super.onStop()
+        stoppedAt = System.currentTimeMillis()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        // the VPN consent or a file picker stops us for a moment: that is not leaving the app
+        if (stoppedAt > 0 && System.currentTimeMillis() - stoppedAt > relockAfterMs) unlocked = false
+    }
+
     override fun onPause() {
         super.onPause()
         // hours or settings may have changed in the app
@@ -88,6 +109,7 @@ class MainActivity : ComponentActivity() {
         // the service may have stopped itself, or the battery setting changed meanwhile;
         // and the day's minutes are counted again, for the state band
         BudgetMonitor.measure(this)
+        com.parentcontrol.socialblocker.sections.SectionGuardService.checkOff(this)
         nav.version++
     }
 

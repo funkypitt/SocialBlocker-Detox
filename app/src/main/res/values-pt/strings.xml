@@ -140,4 +140,73 @@
         <item quantity="one">%1$s: o minuto de hoje está esgotado, bloqueados até à meia-noite</item>
         <item quantity="other">%1$s: os %2$d minutos de hoje estão esgotados, bloqueados até à meia-noite</item>
     </plurals>
+    <!-- secções com cota e PIN parental (versão família, 1.11.0) -->
+    <string name="sections">secções com cota</string>
+    <string name="sections_none">nenhuma cota de secção</string>
+    <plurals name="sections_count">
+        <item quantity="one">%1$d secção com cota</item>
+        <item quantity="other">%1$d secções com cota</item>
+    </plurals>
+    <string name="sec_hint">Minutos por dia numa parte de uma app — Atualizações e canais do WhatsApp, os modelos do CapCut — enquanto o resto da app fica aberto. Contados só quando essa parte está no ecrã e o ecrã está ligado; à meia-noite a contagem recomeça. Precisa do serviço de acessibilidade abaixo.</string>
+    <string name="sec_service_label">Reader\'s Detox — secções</string>
+    <string name="sec_service_desc">Vê que parte do WhatsApp ou do CapCut está no ecrã, para contar os minutos que um pai permitiu nela e sair quando estiverem gastos. Não lê nenhuma mensagem e não guarda nada dos ecrãs.</string>
+    <string name="sec_service_on">serviço de acessibilidade: a funcionar</string>
+    <string name="sec_service_off">serviço de acessibilidade: desligado</string>
+    <string name="sec_service_hint">toque para o ligar nas definições. Permite à app ver que parte do WhatsApp ou do CapCut está no ecrã; nenhuma mensagem é lida.</string>
+    <string name="sec_service_off_since">serviço de acessibilidade: desligado desde %1$s</string>
+    <string name="sec_weekday">minutos por dia, de segunda a sexta</string>
+    <string name="sec_weekend">minutos por dia, sábado e domingo</string>
+    <string name="sec_minutes_prompt">minutos por dia (0 = fechado todo o dia)</string>
+    <plurals name="sec_minutes_value">
+        <item quantity="one">%1$d minuto</item>
+        <item quantity="other">%1$d minutos</item>
+    </plurals>
+    <plurals name="sec_today">
+        <item quantity="one">%1$d minuto hoje</item>
+        <item quantity="other">%1$d minutos hoje</item>
+    </plurals>
+    <string name="sec_today_hint">contados hoje</string>
+    <string name="sec_warn">um aviso cinco minutos antes do fim</string>
+    <string name="sec_rules">regras v%1$d · %2$s</string>
+    <string name="sec_rules_bundled">integradas</string>
+    <string name="sec_rules_custom">importadas</string>
+    <string name="sec_rules_hint">que ecrãs contam para cada secção; um ficheiro a substituir quando o WhatsApp ou o CapCut mudam</string>
+    <string name="sec_import">importar um ficheiro de regras…</string>
+    <string name="sec_export">exportar as regras…</string>
+    <string name="sec_reset">voltar às regras integradas</string>
+    <string name="sec_import_bad">este ficheiro não é um ficheiro de regras; as regras em uso mantêm-se</string>
+    <string name="sec_import_ok">regras importadas: versão %1$d</string>
+    <string name="sec_discovery_on">descoberta: a decorrer até às %1$s</string>
+    <string name="sec_discovery_off">descoberta: desligada</string>
+    <string name="sec_discovery_hint">toque para dez minutos (toque de novo para parar). A estrutura de cada ecrã do WhatsApp ou do CapCut é então escrita num ficheiro, para encontrar os marcadores de uma secção. Faça-o em ecrãs sem conversas privadas.</string>
+    <plurals name="sec_dumps">
+        <item quantity="one">%1$d ecrã capturado</item>
+        <item quantity="other">%1$d ecrãs capturados</item>
+    </plurals>
+    <string name="sec_dumps_none">ainda nenhuma captura</string>
+    <string name="sec_dumps_export">exportar as capturas…</string>
+    <string name="sec_dumps_clear">apagar as capturas</string>
+    <string name="export_saved">guardado como %1$s</string>
+    <string name="share_export">partilhar este ficheiro…</string>
+    <string name="pin_title">PIN parental</string>
+    <string name="pin_enter">introduza o PIN parental</string>
+    <string name="pin_wrong">PIN errado</string>
+    <string name="pin_set">definir um PIN parental</string>
+    <string name="pin_set_hint">depois toda a app abre com ele: parar, sites, horas, orçamento, secções</string>
+    <string name="pin_protected">PIN parental: definido</string>
+    <string name="pin_new">novo PIN (4 a 8 algarismos)</string>
+    <string name="pin_confirm">o mesmo PIN outra vez</string>
+    <string name="pin_mismatch">os dois PIN são diferentes</string>
+    <string name="pin_change">mudar o PIN</string>
+    <string name="pin_remove">remover o PIN</string>
+    <string name="pin_current">PIN atual</string>
+    <string name="sec_family_link">No telemóvel da criança, bloqueie as definições de acessibilidade e a desinstalação de apps com o Family Link ou outro gestor de dispositivos; senão a criança pode desligar o serviço.</string>
+    <string name="sec_quota_reached">%1$s: cota de hoje atingida</string>
+    <plurals name="sec_minutes_left">
+        <item quantity="one">%1$s: falta %2$d minuto hoje</item>
+        <item quantity="other">%1$s: faltam %2$d minutos hoje</item>
+    </plurals>
+    <string name="sec_channel">secções</string>
+    <string name="sec_off_title">cotas de secção não aplicadas</string>
+    <string name="sec_off_text">O serviço de acessibilidade do Reader\'s Detox está desligado. Volte a ligá-lo nas definições de acessibilidade.</string>
 </resources>

@@ -1,0 +1,49 @@
+{
+  "_comment": "Detection rules of the sections with a quota. Format: docs/RULES.md. Keys starting with _ are comments. Patterns match the whole value, * standing for anything, case ignored. Every text/desc entry of every language may match: the rules do not know the phone's language.",
+  "_status": "DRAFT — the view ids and activities below are guesses to confirm with the discovery dumps (docs/RULES.md, 'Updating the rules'). The text and description markers are the ones to trust first.",
+  "version": 1,
+  "packages": {
+    "com.whatsapp": {
+      "name": "WhatsApp",
+      "sections": {
+        "updates": {
+          "name": {"en": "Updates and channels", "fr": "Actus et chaînes", "de": "Aktuelles und Kanäle", "es": "Novedades y canales", "pt": "Atualizações e canais", "ru": "Обновления и каналы"},
+          "_what": "The Updates tab (statuses + channels) of the home screen, and a channel opened from it. Chats and calls never match.",
+          "any": [
+            {"_": "the bottom tab, selected — by its label", "desc": {"en": ["Updates"], "fr": ["Actus", "Actualités"], "pl": ["Aktualizacje"]}, "selected": true},
+            {"text": {"en": ["Updates"], "fr": ["Actus", "Actualités"], "pl": ["Aktualizacje"]}, "selected": true},
+            {"_": "the same tab by its view id (to confirm)", "id": "com.whatsapp:id/*updates*tab*", "selected": true},
+            {"_": "a channel screen: WhatsApp calls channels 'newsletter' internally (to confirm)", "activity": "*newsletter*"},
+            {"id": "com.whatsapp:id/*newsletter*"}
+          ],
+          "none": [],
+          "escape": [
+            {"_": "the Chats tab, tapped to leave", "desc": {"en": ["Chats"], "fr": ["Discussions"], "pl": ["Czaty"]}, "clickable": true},
+            {"text": {"en": ["Chats"], "fr": ["Discussions"], "pl": ["Czaty"]}, "clickable": true},
+            {"id": "com.whatsapp:id/*chats*tab*"}
+          ]
+        }
+      }
+    },
+    "com.lemon.lvoverseas": {
+      "name": "CapCut",
+      "sections": {
+        "templates": {
+          "name": {"en": "Templates and For you", "fr": "Modèles et Pour toi", "de": "Vorlagen und Für dich", "es": "Plantillas y Para ti", "pt": "Modelos e Para você", "ru": "Шаблоны и Для вас"},
+          "_what": "The Templates tab and its For you feed, a template's page and its search. The editor (New project / an open project) never matches.",
+          "any": [
+            {"_": "the bottom tab, selected — by its label", "text": {"en": ["Templates", "Template"], "fr": ["Modèles", "Modèle"], "pl": ["Szablony", "Szablon"]}, "selected": true},
+            {"desc": {"en": ["Templates", "Template"], "fr": ["Modèles", "Modèle"], "pl": ["Szablony", "Szablon"]}, "selected": true},
+            {"_": "the feed inside it", "text": {"en": ["For you"], "fr": ["Pour toi", "Pour vous"], "pl": ["Dla Ciebie"]}, "selected": true},
+            {"_": "template screens by their activity (to confirm)", "activity": "*Template*"}
+          ],
+          "none": [],
+          "escape": [
+            {"_": "the editor tab, tapped to leave", "text": {"en": ["Edit"], "fr": ["Montage", "Éditer", "Modifier"], "pl": ["Edytuj", "Edycja"]}, "clickable": true},
+            {"desc": {"en": ["Edit"], "fr": ["Montage", "Éditer", "Modifier"], "pl": ["Edytuj", "Edycja"]}, "clickable": true}
+          ]
+        }
+      }
+    }
+  }
+}

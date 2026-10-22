@@ -32,6 +32,33 @@ device, use the original.
 * Black and white, text only, six languages. Installs beside the original SocialBlocker
   (different application id).
 
+## Family build (a child's phone)
+
+A second build, `famille`, exists for a child's phone, delivered as an APK outside F-Droid
+(same application id and key: it installs over the public one). It adds:
+
+* **A parent PIN**, four to eight digits, set in *sections with a quota*. Once set, the whole
+  app opens on it: stopping, the sites, the hours, the budget and the sections. The widget's
+  switch opens the app on the PIN instead of stopping.
+* **Section quotas**: minutes a day on one *part* of an app while the rest stays open —
+  WhatsApp's *Updates* tab and channels (chats and calls stay free), CapCut's *Templates* tab and
+  its *For you* feed (the editor stays free). One figure for the week, one for the weekend;
+  0 closes the section all day. The time runs only while that part is on the screen and the
+  screen is on; the count starts again at midnight. Spent, the section is left (a tap on the
+  *Chats* or editor tab, else Back) with a short message; a warning five minutes before is
+  optional. Kept by an accessibility service limited to those two apps.
+* **Rules in a file**, not in the code: which screens count as a section is read from
+  [docs/RULES.md](docs/RULES.md)'s JSON, bundled and replaceable from the app, with a discovery
+  mode for the parent to capture the structure of the screens when WhatsApp or CapCut change.
+* **Privacy**: the service compares view ids and labels in memory for the length of one look,
+  keeps nothing of the screens and never reads a message; outside discovery mode no text from
+  a screen is written anywhere.
+* **Family Link**: the child can switch an accessibility service off or uninstall the app
+  unless the device manager locks both; the app notifies the parent when its service is off.
+
+Device checks: [docs/TEST-CHECKLIST.md](docs/TEST-CHECKLIST.md). The public build carries
+neither the PIN nor the service.
+
 More detail: [docs/NOTES.md](docs/NOTES.md).
 
 ## Install
@@ -48,7 +75,9 @@ All three deliver the same file, with the same signature.
 ## Build
 
 ```
-./gradlew assembleDebug
+./gradlew assemblePubliqueDebug     # the public app
+./gradlew assembleFamilleRelease    # the family build (PIN + section quotas), signed with gallaz-sign
+./gradlew testFamilleDebugUnitTest  # unit tests
 ```
 
 minSdk 24, targetSdk 34. The UI is Kotlin + Jetpack Compose; the VPN service is the original Java.

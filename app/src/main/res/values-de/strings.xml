@@ -140,4 +140,73 @@
         <item quantity="one">%1$s: die Minute von heute ist aufgebraucht, gesperrt bis Mitternacht</item>
         <item quantity="other">%1$s: die %2$d Minuten von heute sind aufgebraucht, gesperrt bis Mitternacht</item>
     </plurals>
+    <!-- Abschnitte mit Kontingent und Eltern-PIN (Familienversion, 1.11.0) -->
+    <string name="sections">Abschnitte mit Kontingent</string>
+    <string name="sections_none">kein Abschnittskontingent</string>
+    <plurals name="sections_count">
+        <item quantity="one">%1$d Abschnitt mit Kontingent</item>
+        <item quantity="other">%1$d Abschnitte mit Kontingent</item>
+    </plurals>
+    <string name="sec_hint">Minuten pro Tag für einen Teil einer App — Aktuelles und Kanäle in WhatsApp, die Vorlagen in CapCut — während der Rest der App offen bleibt. Gezählt wird nur, solange dieser Teil auf dem Bildschirm und der Bildschirm an ist; um Mitternacht beginnt die Zählung neu. Braucht den Bedienungshilfen-Dienst unten.</string>
+    <string name="sec_service_label">Reader\'s Detox — Abschnitte</string>
+    <string name="sec_service_desc">Erkennt, welcher Teil von WhatsApp oder CapCut auf dem Bildschirm ist, um die von einem Elternteil erlaubten Minuten zu zählen und ihn danach zu verlassen. Liest keine Nachricht und behält nichts von den Bildschirmen.</string>
+    <string name="sec_service_on">Bedienungshilfen-Dienst: läuft</string>
+    <string name="sec_service_off">Bedienungshilfen-Dienst: aus</string>
+    <string name="sec_service_hint">antippen, um ihn in den Einstellungen einzuschalten. Er lässt die App sehen, welcher Teil von WhatsApp oder CapCut auf dem Bildschirm ist; keine Nachricht wird gelesen.</string>
+    <string name="sec_service_off_since">Bedienungshilfen-Dienst: aus seit %1$s</string>
+    <string name="sec_weekday">Minuten pro Tag, Montag bis Freitag</string>
+    <string name="sec_weekend">Minuten pro Tag, Samstag und Sonntag</string>
+    <string name="sec_minutes_prompt">Minuten pro Tag (0 = ganztags geschlossen)</string>
+    <plurals name="sec_minutes_value">
+        <item quantity="one">%1$d Minute</item>
+        <item quantity="other">%1$d Minuten</item>
+    </plurals>
+    <plurals name="sec_today">
+        <item quantity="one">%1$d Minute heute</item>
+        <item quantity="other">%1$d Minuten heute</item>
+    </plurals>
+    <string name="sec_today_hint">heute gezählt</string>
+    <string name="sec_warn">eine Warnung fünf Minuten vor dem Ende</string>
+    <string name="sec_rules">Regeln v%1$d · %2$s</string>
+    <string name="sec_rules_bundled">eingebaut</string>
+    <string name="sec_rules_custom">importiert</string>
+    <string name="sec_rules_hint">welche Bildschirme zu welchem Abschnitt zählen; eine Datei, die ersetzt wird, wenn WhatsApp oder CapCut sich ändern</string>
+    <string name="sec_import">Regeldatei importieren…</string>
+    <string name="sec_export">Regeln exportieren…</string>
+    <string name="sec_reset">zurück zu den eingebauten Regeln</string>
+    <string name="sec_import_bad">diese Datei ist keine Regeldatei; die geltenden Regeln bleiben</string>
+    <string name="sec_import_ok">Regeln importiert: Version %1$d</string>
+    <string name="sec_discovery_on">Erkundung: läuft bis %1$s</string>
+    <string name="sec_discovery_off">Erkundung: aus</string>
+    <string name="sec_discovery_hint">antippen für zehn Minuten (erneut antippen zum Beenden). Der Aufbau jedes WhatsApp- oder CapCut-Bildschirms wird dann in eine Datei geschrieben, um die Merkmale eines Abschnitts zu finden. Nur auf Bildschirmen ohne private Unterhaltung.</string>
+    <plurals name="sec_dumps">
+        <item quantity="one">%1$d Bildschirm erfasst</item>
+        <item quantity="other">%1$d Bildschirme erfasst</item>
+    </plurals>
+    <string name="sec_dumps_none">noch keine Erfassung</string>
+    <string name="sec_dumps_export">Erfassungen exportieren…</string>
+    <string name="sec_dumps_clear">Erfassungen löschen</string>
+    <string name="export_saved">gespeichert als %1$s</string>
+    <string name="share_export">diese Datei teilen…</string>
+    <string name="pin_title">Eltern-PIN</string>
+    <string name="pin_enter">Eltern-PIN eingeben</string>
+    <string name="pin_wrong">falsche PIN</string>
+    <string name="pin_set">Eltern-PIN festlegen</string>
+    <string name="pin_set_hint">danach öffnet sich die ganze App damit: Anhalten, Seiten, Zeiten, Budget, Abschnitte</string>
+    <string name="pin_protected">Eltern-PIN: festgelegt</string>
+    <string name="pin_new">neue PIN (4 bis 8 Ziffern)</string>
+    <string name="pin_confirm">dieselbe PIN noch einmal</string>
+    <string name="pin_mismatch">die beiden PINs stimmen nicht überein</string>
+    <string name="pin_change">PIN ändern</string>
+    <string name="pin_remove">PIN entfernen</string>
+    <string name="pin_current">aktuelle PIN</string>
+    <string name="sec_family_link">Sperren Sie auf dem Telefon des Kindes die Bedienungshilfen-Einstellungen und das Deinstallieren von Apps mit Family Link oder einer anderen Geräteverwaltung; sonst kann das Kind den Dienst ausschalten.</string>
+    <string name="sec_quota_reached">%1$s: Kontingent für heute erreicht</string>
+    <plurals name="sec_minutes_left">
+        <item quantity="one">%1$s: heute noch %2$d Minute</item>
+        <item quantity="other">%1$s: heute noch %2$d Minuten</item>
+    </plurals>
+    <string name="sec_channel">Abschnitte</string>
+    <string name="sec_off_title">Abschnittskontingente nicht eingehalten</string>
+    <string name="sec_off_text">Der Bedienungshilfen-Dienst von Reader\'s Detox ist aus. Schalten Sie ihn in den Bedienungshilfen wieder ein.</string>
 </resources>
